@@ -86,7 +86,7 @@ class SpidConfigureForm extends ConfigFormBase {
 
     $form['service_provider'] = [
       '#type' => 'fieldset',
-      '#title' => $this->t('Service Provider Configuration'),
+      '#title' => $this->t('Service Provider configuration'),
     ];
 
     $form['service_provider']['config_info'] = [
@@ -166,14 +166,14 @@ class SpidConfigureForm extends ConfigFormBase {
     $form['service_provider']['sp_metadata_attributes'] = [
       '#type' => 'checkboxes',
       '#title' => $this->t('Required attributes'),
-      '#description' => $this->t('Choose which attributes we want returned from idp. Notice that this list is used to populate the metadata, change this after that the metadata has been submitted to the different idp has no effect.'),
+      '#description' => $this->t('Choose which attributes we want returned from the Identity Provider. Notice that this list is used to populate the metadata, change this after that the metadata has been submitted to the different idp has no effect.'),
       '#default_value' => $config->get('sp_metadata_attributes'),
       '#options' => SamlService::getSPIDAttributes(),
     ];
 
     $form['identity_provider'] = [
       '#type' => 'fieldset',
-      '#title' => $this->t('Identity Provider Configuration'),
+      '#title' => $this->t('Identity Provider configuration'),
     ];
 
     $plugins = $this->idpPluginManager->getDefinitions();
@@ -185,7 +185,7 @@ class SpidConfigureForm extends ConfigFormBase {
 
     $form['identity_provider']['idp_list'] = [
       '#type' => 'checkboxes',
-      '#title' => $this->t('Enabled identity providers'),
+      '#title' => $this->t('Enabled Identity Providers'),
       '#description' => $this->t('Choose which Identity providers to enable.'),
       '#default_value' => $config->get('idp_list'),
       '#options' => $idpList,
@@ -193,7 +193,7 @@ class SpidConfigureForm extends ConfigFormBase {
 
     $form['identity_provider']['idp_test'] = [
       '#type' => 'fieldset',
-      '#title' => $this->t('Test idp data'),
+      '#title' => $this->t('Test Identity Provider data'),
       '#states' => [
         'visible' => [
           [':input[name="idp_list[spid-testenv-identityserver]"]' => ['checked' => TRUE]],
@@ -204,7 +204,7 @@ class SpidConfigureForm extends ConfigFormBase {
     $form['identity_provider']['idp_test']['idp_test_entityid'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Entity ID'),
-      '#description' => $this->t('The entity ID of the test idp.'),
+      '#description' => $this->t('The entity ID of the test Identity Provider.'),
       '#default_value' => $config->get('idp_test_entityid'),
       '#states' => [
         'required' => [
@@ -215,8 +215,8 @@ class SpidConfigureForm extends ConfigFormBase {
 
     $form['identity_provider']['idp_test']['idp_test_sso'] = [
       '#type' => 'textfield',
-      '#title' => $this->t('Single sign on service'),
-      '#description' => $this->t('The single sign on url of the test idp.'),
+      '#title' => $this->t('Single sign-on service'),
+      '#description' => $this->t('The single sign-on url of the test Identity Provider.'),
       '#default_value' => $config->get('idp_test_sso'),
       '#states' => [
         'required' => [
@@ -228,7 +228,7 @@ class SpidConfigureForm extends ConfigFormBase {
     $form['identity_provider']['idp_test']['idp_test_slo'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Single logout service'),
-      '#description' => $this->t('The single logout url of the test idp.'),
+      '#description' => $this->t('The single logout url of the test Identity Provider.'),
       '#default_value' => $config->get('idp_test_slo'),
       '#states' => [
         'required' => [
@@ -239,8 +239,8 @@ class SpidConfigureForm extends ConfigFormBase {
 
     $form['identity_provider']['idp_test']['idp_test_x509cert'] = [
       '#type' => 'textarea',
-      '#title' => $this->t('x509cert'),
-      '#description' => $this->t('The x509cert certificate of the test idp.'),
+      '#title' => $this->t('x509 Certificate'),
+      '#description' => $this->t('The x509cert certificate of the test Identity Provider.'),
       '#default_value' => $config->get('idp_test_x509cert'),
       '#states' => [
         'required' => [
@@ -273,14 +273,14 @@ class SpidConfigureForm extends ConfigFormBase {
     $form['security']['security_authn_requests_sign'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Sign authentication requests'),
-      '#description' => $this->t('Requests sent to the Single Sign-On Service of the IDP will include a signature.'),
+      '#description' => $this->t('Requests sent to the Single sign-on Service of the Identity Provider will include a signature.'),
       '#default_value' => $config->get('security_authn_requests_sign'),
     ];
 
     $form['security']['security_messages_sign'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Request messages to be signed'),
-      '#description' => $this->t('Response messages from the IDP are expected to be signed.'),
+      '#description' => $this->t('Response messages from the Identity Provider are expected to be signed.'),
       '#default_value' => $config->get('security_messages_sign'),
       '#states' => [
         'disabled' => [
@@ -290,8 +290,13 @@ class SpidConfigureForm extends ConfigFormBase {
     ];
 
     $form['security']['security_request_authn_context'] = [
-      '#type' => 'checkbox',
-      '#title' => $this->t('Request authn context'),
+      '#type' => 'select',
+      '#title' => $this->t('SPID authentication level'),
+      '#options' => [
+        'https://www.spid.gov.it/SpidL1' => 'SpidL1',
+        'https://www.spid.gov.it/SpidL2' => 'SpidL2',
+        'https://www.spid.gov.it/SpidL3' => 'SpidL3',
+      ],
       '#default_value' => $config->get('security_request_authn_context'),
     ];
 

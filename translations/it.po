@@ -1,0 +1,223 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: 1.0-beta1\n"
+"POT-Creation-Date: 2017-12-04 13:00+0200\n"
+"PO-Revision-Date: 2017-12-04 13:00+0200\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+
+msgid "Invalid e-mail address @mail"
+msgstr "L'indirizzo email @mail non è valido"
+
+msgid "Email address is not provided in SAML attribute."
+msgstr "L'indirizzo email non è presente tra gli attributi SAML"
+
+msgid "Service Provider configuration"
+msgstr "Configurazione del Service Provider"
+
+msgid "Metadata URL"
+msgstr "URL dei metadati"
+
+msgid "Assertion Consumer Service"
+msgstr "URL del consumer delle asserzioni"
+
+msgid "Single Logout Service"
+msgstr "URL del servizio di logout"
+
+msgid "Entity ID"
+msgstr "Entity ID"
+
+msgid "Specifies the identifier to be used to represent the SP."
+msgstr "Specifica l'identificativo usato per rappresentare questo Service Provider."
+
+msgid "Type of configuration to save for the certificates"
+msgstr "Modalità di salvataggio dei certificati"
+
+msgid "Folder name"
+msgstr "Nome della cartella"
+
+msgid "Cert/key value"
+msgstr "Valore del certificato/chiave"
+
+msgid "x509 Certificate"
+msgstr "Certificato x509"
+
+msgid "Public x509 certificate of the SP. No line breaks or BEGIN CERTIFICATE or END CERTIFICATE lines."
+msgstr "Il certificato x509 pubblico di questo Service Provider. Non inserire caratteri di a capo né le linee BEGIN CERTIFICATE o END CERTIFICATE."
+
+msgid "Private Key"
+msgstr "Chiave privata"
+
+msgid "Private key for SP. No line breaks or BEGIN CERTIFICATE or END CERTIFICATE lines."
+msgstr "Chiave privata di questo Service Provider. Non inserire caratteri di a capo né le linee BEGIN CERTIFICATE o END CERTIFICATE."
+
+msgid "Certificate folder"
+msgstr "Cartella del certificato"
+
+msgid "Set the path to the folder containing a /certs subfolder and the /certs/sp.key (private key) and /certs/sp.crt (public cert) files. The names of the subfolder and files are mandated by the external SAML Toolkit library."
+msgstr "Imposta il percorso della cartella contentente la sotto-cartella /certs e i file /certs/sp.key (la chiave privata) e /certs/sp.crt (il certificato pubblico). Il nome della sotto-cartella e dei file sono stabiliti dalla libreria SAML."
+
+msgid "Required attributes"
+msgstr "Arrtibuti richiesti"
+
+msgid "Choose which attributes we want returned from the Identity Provider. Notice that this list is used to populate the metadata, change this after that the metadata has been submitted to the different idp has no effect."
+msgstr "Scegli quali attributi devono essere ritornati dall'Identity Provider. Attenzione, questa lista è utilizzata per popolare il file con i metadati, modificare questa configurazione dopo che i metadati sono stati inviati agli Identity Provider non ha nessun effetto."
+
+msgid "Identity Provider configuration"
+msgstr "Configurazione degli Identity Provider"
+
+msgid "Enabled Identity Providers"
+msgstr "Identity Provider abilitati"
+
+msgid "Choose which Identity providers to enable."
+msgstr "Scegli quali Identity Provider abilitare."
+
+msgid "Test Identity Provider data"
+msgstr "Dati per l'Identity Provider di test"
+
+msgid "The entity ID of the test Identity Provider."
+msgstr "Entity Id dell'Identity Provider di test."
+
+msgid "Single sign-on service"
+msgstr "Servizio di Single sign-on"
+
+msgid "The single sign-on url of the test Identity Provider."
+msgstr "L'URL di Single sign-on dell'Identity Provider di test."
+
+msgid "Single logout service"
+msgstr "Servizio di Single logout"
+
+msgid "The single logout url of the test Identity Provider."
+msgstr "L'URL di Single logout dell'Identity Provider di test."
+
+msgid "The x509cert certificate of the test Identity Provider."
+msgstr "Il certificato x509 dell'Identity Provider di test."
+
+msgid "User field mapping"
+msgstr "Mapping dei campi utente"
+
+msgid "Security Options"
+msgstr "Opzioni di sicurezza"
+
+msgid "Strict mode"
+msgstr "Modalità strict"
+
+msgid "In strict mode, any validation failures or unsigned SAML messages which are requested to be signed (according to your settings) will cause the SAML conversation to be terminated. In production environments, this <em>must</em> be set."
+msgstr "Quando è abilitata la modalità strict qualsiasi fallimento nella validazione o qualsiasi messaggio SAML non firmato (quanto invece la firma è richiesta) causeranno la terminazione della conversazione SAML. In produzione <em>deve</em> essere abilitato."
+
+msgid "Sign authentication requests"
+msgstr "Firma le richieste di autenticazione"
+
+msgid "Requests sent to the Single sign-on Service of the Identity Provider will include a signature."
+msgstr "Le richieste inviate al servizio di Single sign-on dell'Identity Provider includeranno la firma."
+
+msgid "Request messages to be signed"
+msgstr "Firma i messaggi"
+
+msgid "Response messages from the Identity Provider are expected to be signed."
+msgstr "I messaggi di disposta dall'Identity Provider arrivano firmati."
+
+msgid "SPID authentication level"
+msgstr "Livello di autenticazione SPID"
+
+msgid "@name field is required."
+msgstr "Il campo @name è richiesto"
+
+msgid "The Certificate folder does not contain the required certs/sp.key or certs/sp.crt files."
+msgstr "La cartella dei certificati non contiene i file richiesti certs/sp.key e certs/sp.crt"
+
+msgid "Button size"
+msgstr "Dimensione del bottone"
+
+msgid "Small"
+msgstr "Piccolo"
+
+msgid "Medium"
+msgstr "Medio"
+
+msgid "Large"
+msgstr "Grande"
+
+msgid "Extra large"
+msgstr "Molto grande"
+
+msgid "Fiscal number"
+msgstr "Codice fiscale"
+
+msgid "Name"
+msgstr "Nome"
+
+msgid "Family name"
+msgstr "Cognome"
+
+msgid "Gender"
+msgstr "Sesso"
+
+msgid "Id card" 
+msgstr "Documento d'identità"
+
+msgid "Expiration date"
+msgstr "Data di scadenza"
+
+msgid "Date of birth"
+msgstr "Data di nascita"
+
+msgid "Place of birth"
+msgstr "Luogo di nascita"
+
+msgid "Country of birth"
+msgstr "Paese di nascita"
+
+msgid "Digital address"
+msgstr "Indirizzo digitale"
+
+msgid "Email"
+msgstr "Email"
+
+msgid "Mobile phone"
+msgstr "Telefono"
+
+msgid "Company name"
+msgstr "Società"
+
+msgid "Registered office"
+msgstr "Ufficio"
+
+msgid "Iva code"
+msgstr "IVA"
+
+msgid "SPID code"
+msgstr "Codice SPID"
+
+msgid "View service provider metadata"
+msgstr "Vedi i metadata del Service Provider"
+
+msgid "Configure SPID authentication"
+msgstr "Configura l'autenticazione SPID"
+
+msgid "SPID Authentication"
+msgstr "Autenticazione SPID"
+
+msgid "Configure SPID authentication behaviors."
+msgstr "Configura l'autenticazione mediante SPID."
+
+msgid "SAML Login"
+msgstr "Login SAML"
+
+msgid "SAML Logout"
+msgstr "Logout SAML"
+
+msgid "SAML Metadata"
+msgstr "Metadati SAML"
+
+msgid "SAML ACS"
+msgstr "ACS SAML"
+
+msgid "SAML SLS"
+msgstr "SLS SAML"
+
+msgid "SPID login button"
+msgstr "Bottone di login SPID"

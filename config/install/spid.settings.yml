@@ -28,4 +28,4 @@ idp_test_x509cert: MIICNTCCAZ6gAwIBAgIES343gjANBgkqhkiG9w0BAQUFADBVMQswCQYDVQQGE
 strict: 1
 security_authn_requests_sign: 1
 security_messages_sign: 1
-security_request_authn_context: 1
+security_request_authn_context: 'https://www.spid.gov.it/SpidL1'

@@ -373,10 +373,13 @@ class SamlService implements SamlServiceInterface {
       'security' => [
         'authnRequestsSigned' => (bool) $config->get('security_authn_requests_sign'),
         'wantMessagesSigned' => (bool) $config->get('security_messages_sign'),
-        'requestedAuthnContext' => (bool) $config->get('security_request_authn_context'),
         'signMetadata' => TRUE,
         'signatureAlgorithm' => \XMLSecurityKey::RSA_SHA256,
         'digestAlgorithm' => \XMLSecurityDSig::SHA256,
+        'requestedAuthnContext' => [
+          $config->get('security_request_authn_context'),
+        ],
+        'requestedAuthnContextComparison' => 'minimum',
       ],
       'strict' => (bool) $config->get('strict'),
     ];

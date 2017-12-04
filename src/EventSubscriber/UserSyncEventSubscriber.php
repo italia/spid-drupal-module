@@ -94,6 +94,9 @@ class UserSyncEventSubscriber implements EventSubscriberInterface {
    *
    * @param \Drupal\spid\Event\spidUserSyncEvent $event
    *   The event.
+   *
+   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
+   * @throws \Drupal\Core\TypedData\Exception\ReadOnlyException
    */
   public function onUserSync(spidUserSyncEvent $event) {
     // If the account is new, we are in the middle of a user save operation;
@@ -106,7 +109,7 @@ class UserSyncEventSubscriber implements EventSubscriberInterface {
     if ($account->isNew()) {
       // Get value from the SAML attribute whose name is configured in the
       // spid module.
-      $name = $this->getAttributeByConfig('user_name_attribute', $event); //fiscalNumber
+      $name = $this->getAttribute('fiscalNumber', $event);
       if ($name && $name != $account->getAccountName()) {
         // Validate the username. This shouldn't be necessary to mitigate
         // attacks; assuming our SAML setup is correct, noone can insert fake
@@ -132,7 +135,6 @@ class UserSyncEventSubscriber implements EventSubscriberInterface {
           $existing_account = reset($account_search);
           if (!$existing_account || $account->id() == $existing_account->id()) {
             $account->setUsername($name);
-            $event->markAccountChanged();
           }
           else {
             $error = 'An account with the username @username already exists.';
@@ -165,7 +167,6 @@ class UserSyncEventSubscriber implements EventSubscriberInterface {
               // externalauth sets init to a non e-mail value so we will fix it.
               $account->set('init', $mail);
             }
-            $event->markAccountChanged();
           }
           else {
             $fatal_errors[] = t('Invalid e-mail address @mail', ['@mail' => $mail]);
@@ -220,7 +221,7 @@ class UserSyncEventSubscriber implements EventSubscriberInterface {
    * @param $attribute
    */
   protected function setFieldValue(spidUserSyncEvent $event, UserInterface &$account, $key, $attribute) {
-    if (($field = $this->config->get($key)) != 'none') {
+    if (($field = $this->config->get($key)) != 'none' && $account->hasField($field)) {
       $account->set($field, $this->getAttribute($attribute, $event));
     }
   }
