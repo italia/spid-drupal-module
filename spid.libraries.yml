@@ -1,0 +1,19 @@
+spid:
+  version: 1.0
+  css:
+    theme:
+      assets/css/spid-sp-access-button.min.css: {}
+  js:
+    assets/js/spid-sp-access-button.min.js: {}
+    assets/js/spid.js: {}
+  dependencies:
+    - core/jquery
+    - core/drupal
+
+spid_config:
+  version: 1.0
+  js:
+    assets/js/spid_config.js: {}
+  dependencies:
+    - core/jquery
+    - core/drupal

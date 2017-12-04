@@ -1,0 +1,18 @@
+{{ attach_library('spid/spid') }}
+
+<a href="#" {{ anchor_attributes.addClass('italia-it-button', 'button-spid') }} aria-haspopup="true" aria-expanded="false">
+    <span class="italia-it-button-icon"><img src="/{{ imagesPath }}/spid-ico-circle-bb.svg"
+                                             onerror="this.src='{{ imagesPath }}/spid-ico-circle-bb.png'; this.onerror=null;"
+                                             alt=""/></span>
+    <span class="italia-it-button-text">Login con SPID</span>
+</a>
+<div {{ list_attributes.addClass('spid-idp-button', 'spid-idp-button-tip', 'spid-idp-button-relative') }}>
+    <ul id="js-spid-idp-list-root-get" class="spid-idp-button-menu" aria-labelledby="spid-idp">
+        {% for idp in idps %}
+            {{ idp }}
+        {% endfor %}
+        <li class="spid-idp-support-link"> <a href="https://www.spid.gov.it">Maggiori informazioni</a> </li>
+        <li class="spid-idp-support-link"> <a href="https://www.spid.gov.it/richiedi-spid">Non hai SPID?</a> </li>
+        <li class="spid-idp-support-link"> <a href="https://www.spid.gov.it/serve-aiuto">Serve aiuto?</a> </li>
+    </ul>
+</div>
