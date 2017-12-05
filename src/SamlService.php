@@ -7,9 +7,9 @@ use Drupal\Core\Config\ImmutableConfig;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Url;
 use Drupal\externalauth\ExternalAuth;
-use Drupal\spid\Event\spidEvents;
-use Drupal\spid\Event\spidUserLinkEvent;
-use Drupal\spid\Event\spidUserSyncEvent;
+use Drupal\spid\Event\SpidEvents;
+use Drupal\spid\Event\SpidUserLinkEvent;
+use Drupal\spid\Event\SpidUserSyncEvent;
 use Drupal\user\UserInterface;
 use OneLogin_Saml2_Auth;
 use OneLogin_Saml2_Error;
@@ -165,7 +165,7 @@ class SamlService implements SamlServiceInterface {
 
       // Try to link an existing user: first through a custom event handler,
       // then by name, then by e-mail.
-      $event = new spidUserLinkEvent($this->getAttributes());
+      $event = new SpidUserLinkEvent($this->getAttributes());
       $this->eventDispatcher->dispatch(spidEvents::USER_LINK, $event);
       $account = $event->getLinkedAccount();
 

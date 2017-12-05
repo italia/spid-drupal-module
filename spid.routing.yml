@@ -36,7 +36,7 @@ spid.saml_controller_sls:
 spid.spid_configure_form:
   path: '/admin/config/people/spid'
   defaults:
-    _form: '\Drupal\spid\Form\spidConfigureForm'
+    _form: '\Drupal\spid\Form\SpidConfigureForm'
     _title: 'SPID Authentication'
   requirements:
     _permission: 'configure spid'

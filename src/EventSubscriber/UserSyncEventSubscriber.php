@@ -6,8 +6,8 @@ use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Field\BaseFieldDefinition;
 use Drupal\Core\TypedData\TypedDataManagerInterface;
-use Drupal\spid\Event\spidEvents;
-use Drupal\spid\Event\spidUserSyncEvent;
+use Drupal\spid\Event\SpidEvents;
+use Drupal\spid\Event\SpidUserSyncEvent;
 use Drupal\user\UserInterface;
 use Egulias\EmailValidator\EmailValidator;
 use Psr\Log\LoggerInterface;
@@ -60,7 +60,7 @@ class UserSyncEventSubscriber implements EventSubscriberInterface {
   protected $config;
 
   /**
-   * Construct a new spidUserSyncSubscriber.
+   * Construct a new SpidUserSyncSubscriber.
    *
    * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
    *   The config factory.
@@ -85,20 +85,20 @@ class UserSyncEventSubscriber implements EventSubscriberInterface {
    * {@inheritdoc}
    */
   public static function getSubscribedEvents() {
-    $events[spidEvents::USER_SYNC][] = ['onUserSync'];
+    $events[SpidEvents::USER_SYNC][] = ['onUserSync'];
     return $events;
   }
 
   /**
    * Performs actions to synchronize users with Factory data on login.
    *
-   * @param \Drupal\spid\Event\spidUserSyncEvent $event
+   * @param \Drupal\spid\Event\SpidUserSyncEvent $event
    *   The event.
    *
    * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
    * @throws \Drupal\Core\TypedData\Exception\ReadOnlyException
    */
-  public function onUserSync(spidUserSyncEvent $event) {
+  public function onUserSync(SpidUserSyncEvent $event) {
     // If the account is new, we are in the middle of a user save operation;
     // the current user name is 'spid_AUTHNAME' (as set by externalauth) and
     // e-mail is not set yet.
@@ -204,23 +204,23 @@ class UserSyncEventSubscriber implements EventSubscriberInterface {
 
   /**
    * @param $attribute
-   * @param \Drupal\spid\Event\spidUserSyncEvent $event
+   * @param \Drupal\spid\Event\SpidUserSyncEvent $event
    *
    * @return mixed
    */
-  public function getAttribute($attribute, spidUserSyncEvent $event) {
+  public function getAttribute($attribute, SpidUserSyncEvent $event) {
     $attributes = $event->getAttributes();
 
     return $attributes[$attribute][0];
   }
 
   /**
-   * @param \Drupal\spid\Event\spidUserSyncEvent $event
+   * @param \Drupal\spid\Event\SpidUserSyncEvent $event
    * @param \Drupal\user\UserInterface $account
    * @param $key
    * @param $attribute
    */
-  protected function setFieldValue(spidUserSyncEvent $event, UserInterface &$account, $key, $attribute) {
+  protected function setFieldValue(SpidUserSyncEvent $event, UserInterface &$account, $key, $attribute) {
     if (($field = $this->config->get($key)) != 'none' && $account->hasField($field)) {
       $account->set($field, $this->getAttribute($attribute, $event));
     }

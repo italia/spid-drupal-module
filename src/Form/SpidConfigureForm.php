@@ -347,12 +347,17 @@ class SpidConfigureForm extends ConfigFormBase {
       $sp_private_key = $form_state->getValue('sp_private_key');
     }
 
+    // fiscalNumber and email are always required.
+    $metadataAttributes = $form_state->getValue('sp_metadata_attributes');
+    $metadataAttributes['fiscalNumber'] = 'fiscalNumber';
+    $metadataAttributes['email'] = 'email';
+
     $this->config('spid.settings')
       ->set('sp_entity_id', $form_state->getValue('sp_entity_id'))
       ->set('sp_x509_certificate', $sp_x509_certificate)
       ->set('sp_private_key', $sp_private_key)
       ->set('sp_cert_folder', $sp_cert_folder)
-      ->set('sp_metadata_attributes', $form_state->getValue('sp_metadata_attributes'))
+      ->set('sp_metadata_attributes', $metadataAttributes)
       ->set('idp_list', $form_state->getValue('idp_list'))
       ->set('idp_test_entityid', $form_state->getValue('idp_test_entityid'))
       ->set('idp_test_sso', $form_state->getValue('idp_test_sso'))
