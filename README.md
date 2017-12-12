@@ -19,7 +19,7 @@ in the *require* section and then:
 "extra": {
   "patches": {
     "onelogin/php-saml": {
-      "Compatibility with the Italian SPID system": "web/modules/contrib/spid/patch/onelogin-php-saml-for-spid.patch"
+      "Compatibility with the Italian SPID system": "https://www.drupal.org/files/issues/onelogin-php-saml-for-spid.patch"
     }
   }
 },
