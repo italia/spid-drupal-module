@@ -35,23 +35,16 @@ class SamlController extends ControllerBase {
   protected $requestStack;
 
   /**
-   * @var \Drupal\Core\Session\AccountProxyInterface
-   */
-  private $currentUser;
-
-  /**
    * Constructor for Drupal\spid\Controller\SamlController.
    *
    * @param \Drupal\spid\SamlServiceInterface $saml
    *   The spid SAML service.
    * @param \Symfony\Component\HttpFoundation\RequestStack $request_stack
    *   The request stack.
-   * @param \Drupal\Core\Session\AccountProxyInterface $current_user
    */
-  public function __construct(SamlServiceInterface $saml, RequestStack $request_stack, AccountProxyInterface $current_user) {
+  public function __construct(SamlServiceInterface $saml, RequestStack $request_stack) {
     $this->saml = $saml;
     $this->requestStack = $request_stack;
-    $this->currentUser = $current_user;
   }
 
   /**
@@ -64,8 +57,7 @@ class SamlController extends ControllerBase {
   public static function create(ContainerInterface $container) {
     return new static(
       $container->get('spid.saml'),
-      $container->get('request_stack'),
-      $container->get('current_user')
+      $container->get('request_stack')
     );
   }
 
@@ -95,7 +87,7 @@ class SamlController extends ControllerBase {
    */
   public function logout() {
     try {
-      $relayState = $this->createRelayState($this->currentUser->id());
+      $relayState = $this->createRelayState($this->currentUser()->id());
       $this->saml->logout($relayState);
       // We don't return here unless something is fundamentally wrong inside the
       // SAML Toolkit sources.
