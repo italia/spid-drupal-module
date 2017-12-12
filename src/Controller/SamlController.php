@@ -4,6 +4,7 @@ namespace Drupal\spid\Controller;
 
 use Drupal\Component\Utility\UrlHelper;
 use Drupal\Core\Controller\ControllerBase;
+use Drupal\Core\Session\AccountProxyInterface;
 use Drupal\Core\Url;
 use Drupal\Core\Utility\Error;
 use Drupal\spid\SamlServiceInterface;
@@ -34,16 +35,23 @@ class SamlController extends ControllerBase {
   protected $requestStack;
 
   /**
+   * @var \Drupal\Core\Session\AccountProxyInterface
+   */
+  private $currentUser;
+
+  /**
    * Constructor for Drupal\spid\Controller\SamlController.
    *
    * @param \Drupal\spid\SamlServiceInterface $saml
    *   The spid SAML service.
    * @param \Symfony\Component\HttpFoundation\RequestStack $request_stack
    *   The request stack.
+   * @param \Drupal\Core\Session\AccountProxyInterface $current_user
    */
-  public function __construct(SamlServiceInterface $saml, RequestStack $request_stack) {
+  public function __construct(SamlServiceInterface $saml, RequestStack $request_stack, AccountProxyInterface $current_user) {
     $this->saml = $saml;
     $this->requestStack = $request_stack;
+    $this->currentUser = $current_user;
   }
 
   /**
@@ -56,7 +64,8 @@ class SamlController extends ControllerBase {
   public static function create(ContainerInterface $container) {
     return new static(
       $container->get('spid.saml'),
-      $container->get('request_stack')
+      $container->get('request_stack'),
+      $container->get('current_user')
     );
   }
 
@@ -86,7 +95,8 @@ class SamlController extends ControllerBase {
    */
   public function logout() {
     try {
-      $this->saml->logout($this->getUrlFromDestination());
+      $relayState = $this->createRelayState($this->currentUser->id());
+      $this->saml->logout($relayState);
       // We don't return here unless something is fundamentally wrong inside the
       // SAML Toolkit sources.
       throw new Exception('Not redirected to SAML IDP');
@@ -147,10 +157,13 @@ class SamlController extends ControllerBase {
    */
   public function sls() {
     try {
-      $this->saml->sls();
-      $url = $this->getRedirectUrlAfterProcessing();
+      list($uid,) = $this->parseRelayState();
+      if ($uid) {
+        $this->saml->sls($uid);
+        $url = $this->getRedirectUrlAfterProcessing();
+      }
     } catch (Exception $e) {
-      $this->handleException($e, 'processing SAML aingle-logout response');
+      $this->handleException($e, 'processing SAML single-logout response');
       $url = Url::fromRoute('<front>', [], ['absolute' => TRUE])->toString();
     }
 
@@ -254,11 +267,14 @@ class SamlController extends ControllerBase {
   }
 
   /**
+   * @param $data
+   *   The data to pass as relay state.
+   *
    * @return string
    */
-  protected function createRelayState($idp) {
+  protected function createRelayState($data) {
     return base64_encode(implode('+', [
-      $idp,
+      $data,
       $this->getUrlFromDestination(),
     ]));
   }

@@ -8,6 +8,7 @@ use Drupal\Core\Field\BaseFieldDefinition;
 use Drupal\Core\TypedData\TypedDataManagerInterface;
 use Drupal\spid\Event\SpidEvents;
 use Drupal\spid\Event\SpidUserSyncEvent;
+use Drupal\spid\SamlService;
 use Drupal\user\UserInterface;
 use Egulias\EmailValidator\EmailValidator;
 use Psr\Log\LoggerInterface;
@@ -118,7 +119,7 @@ class UserSyncEventSubscriber implements EventSubscriberInterface {
         // copied from user_validate_name().
         $definition = BaseFieldDefinition::create('string')
           ->addConstraint('UserName', []);
-        $data = \Drupal::typedDataManager()->create($definition);
+        $data = $this->typedDataManager->create($definition);
         $data->setValue($name);
         $violations = $data->validate();
         if ($violations) {
@@ -179,20 +180,9 @@ class UserSyncEventSubscriber implements EventSubscriberInterface {
       }
     }
 
-    $this->setFieldValue($event, $account, 'user_name', 'name');
-    $this->setFieldValue($event, $account, 'user_familyname', 'familyName');
-    $this->setFieldValue($event, $account, 'user_gender', 'gender');
-    $this->setFieldValue($event, $account, 'user_idcard', 'idCard');
-    $this->setFieldValue($event, $account, 'user_expirationdate', 'expirationDate');
-    $this->setFieldValue($event, $account, 'user_dateofbirth', 'dateOfBirth');
-    $this->setFieldValue($event, $account, 'user_placeofbirth', 'placeOfBirth');
-    $this->setFieldValue($event, $account, 'user_countyofbirth', 'countyOfBirth');
-    $this->setFieldValue($event, $account, 'user_digitaladdress', 'digitalAddress');
-    $this->setFieldValue($event, $account, 'user_mobilephone', 'mobilePhone');
-    $this->setFieldValue($event, $account, 'user_companyname', 'companyName');
-    $this->setFieldValue($event, $account, 'user_registeredoffice', 'registeredOffice');
-    $this->setFieldValue($event, $account, 'user_ivacode', 'ivaCode');
-    $this->setFieldValue($event, $account, 'user_spidcode', 'spidCode');
+    foreach (SamlService::getSPIDAttributes() as $key => $attribute) {
+      $this->setFieldValue($event, $account, 'user_' . $key, $key);
+    }
 
     $event->markAccountChanged();
 

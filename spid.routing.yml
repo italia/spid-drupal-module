@@ -32,7 +32,7 @@ spid.saml_controller_sls:
     _controller: '\Drupal\spid\Controller\SamlController::sls'
     _title: 'SAML SLS'
   requirements:
-    _role: 'authenticated'
+    _role: 'anonymous'
 spid.spid_configure_form:
   path: '/admin/config/people/spid'
   defaults:

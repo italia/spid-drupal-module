@@ -102,7 +102,7 @@ class SamlService implements SamlServiceInterface {
   }
 
   /**
-   * {@inheritdoc
+   * {@inheritdoc}
    */
   public function getMetadata() {
     $settings = $this->getspid()->getSettings();
@@ -118,25 +118,29 @@ class SamlService implements SamlServiceInterface {
   }
 
   /**
-   * {@inheritdoc
+   * {@inheritdoc}
    */
   public function login($idp, $return_to = NULL) {
     $this->getspid($idp)->login($return_to);
   }
 
   /**
-   * {@inheritdoc
+   * {@inheritdoc}
    */
   public function logout($return_to = NULL) {
     $sessionIndex = $this->session->get('session_index');
     $idp = $this->session->get('idp');
 
+    // Log out locally.
+    user_logout();
+
+    // Log out on the IDP.
     $this->getspid($idp)
-      ->logout($return_to, ['referrer' => $return_to], NULL, $sessionIndex);
+      ->logout($return_to, [], NULL, $sessionIndex);
   }
 
   /**
-   * {@inheritdoc
+   * {@inheritdoc}
    */
   public function acs($idp) {
     // This call can either set an error condition or throw a
@@ -159,9 +163,10 @@ class SamlService implements SamlServiceInterface {
     $nameAttribute = 'fiscalNumber';
     $mailAttribute = 'email';
 
-    $account = $this->externalAuth->load($nameAttribute, 'spid');
+    $authName = $this->getspid($idp)->getAttribute($nameAttribute);
+    $account = $this->externalAuth->load($authName[0], 'spid');
     if (!$account) {
-      $this->logger->debug('No matching local users found for unique SAML ID @saml_id.', ['@saml_id' => $nameAttribute]);
+      $this->logger->debug('No matching local users found for unique SAML ID @saml_id.', ['@saml_id' => $authName[0]]);
 
       // Try to link an existing user: first through a custom event handler,
       // then by name, then by e-mail.
@@ -177,10 +182,10 @@ class SamlService implements SamlServiceInterface {
         // cryptic machine name because  synchronizeUserAttributes() cannot
         // assign the proper name while saving.)
         if ($account_search = $this->entityTypeManager->getStorage('user')
-          ->loadByProperties(['name' => $nameAttribute])) {
+          ->loadByProperties(['name' => $authName[0]])) {
           $account = reset($account_search);
           $this->logger->info('Matching local user @uid found for name @name (as provided in a SAML attribute); associating user and logging in.', [
-            '@name' => $nameAttribute,
+            '@name' => $authName[0],
             '@uid' => $account->id(),
           ]);
         }
@@ -203,7 +208,7 @@ class SamlService implements SamlServiceInterface {
         // just log the account in anyway. Next time the same not-yet-linked
         // user logs in, we will again try to link the account in the same way
         // and (falsely) log that we are associating the user.
-        $this->externalAuth->linkExistingAccount($nameAttribute, 'spid', $account);
+        $this->externalAuth->linkExistingAccount($authName[0], 'spid', $account);
       }
     }
 
@@ -221,9 +226,9 @@ class SamlService implements SamlServiceInterface {
       // hook into the save operation of the user account object that is
       // created by register(). It seems we can only do this by implementing
       // hook_user_presave() - which calls our synchronizeUserAttributes().
-      $account = $this->externalAuth->register($nameAttribute, 'spid');
+      $account = $this->externalAuth->register($authName[0], 'spid');
 
-      $this->externalAuth->userLoginFinalize($account, $nameAttribute, 'spid');
+      $this->externalAuth->userLoginFinalize($account, $authName[0], 'spid');
     }
     elseif ($account->isBlocked()) {
       throw new RuntimeException('Requested account is blocked.');
@@ -232,7 +237,7 @@ class SamlService implements SamlServiceInterface {
       // Synchronize the user account with SAML attributes if needed.
       $this->synchronizeUserAttributes($account);
 
-      $this->externalAuth->userLoginFinalize($account, $nameAttribute, 'spid');
+      $this->externalAuth->userLoginFinalize($account, $authName[0], 'spid');
     }
 
     $sessionIndex = $this->spid->getSessionIndex();
@@ -241,14 +246,14 @@ class SamlService implements SamlServiceInterface {
   }
 
   /**
-   * {@inheritdoc
+   * {@inheritdoc}
    */
-  public function sls() {
-    user_logout();
+  public function sls($uid) {
+    // TODO: fire a new logout event.
   }
 
   /**
-   * {@inheritdoc
+   * {@inheritdoc}
    */
   public function synchronizeUserAttributes(UserInterface $account, $skip_save = FALSE) {
     // Dispatch a user_sync event.
@@ -261,14 +266,14 @@ class SamlService implements SamlServiceInterface {
   }
 
   /**
-   * {@inheritdoc
+   * {@inheritdoc}
    */
   public function getAttributes() {
     return $this->getspid()->getAttributes();
   }
 
   /**
-   * {@inheritdoc
+   * {@inheritdoc}
    */
   public static function getSPIDAttributes() {
     $t = \Drupal::translation();
@@ -374,6 +379,7 @@ class SamlService implements SamlServiceInterface {
         'authnRequestsSigned' => (bool) $config->get('security_authn_requests_sign'),
         'wantMessagesSigned' => (bool) $config->get('security_messages_sign'),
         'signMetadata' => TRUE,
+        'wantAssertionsSigned' => TRUE,
         'signatureAlgorithm' => \XMLSecurityKey::RSA_SHA256,
         'digestAlgorithm' => \XMLSecurityDSig::SHA256,
         'requestedAuthnContext' => [

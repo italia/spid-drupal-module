@@ -3,7 +3,6 @@
 namespace Drupal\spid;
 
 use Drupal\user\UserInterface;
-use Exception;
 use OneLogin_Saml2_Error;
 
 /**
@@ -44,14 +43,18 @@ interface SamlServiceInterface {
    * Drupal user (logs in / maps existing / create new) depending on attributes
    * sent in the request and our module configuration.
    *
-   * @throws Exception
+   * @param $idp
+   *   The IDP to login to.
    */
   public function acs($idp);
 
   /**
    * Does processing for the Single Logout Service if necessary.
+   *
+   * @param $uid
+   *   The user to log out.
    */
-  public function sls();
+  public function sls($uid);
 
   /**
    * Synchronizes user data with attributes in the SAML request.
