@@ -1,0 +1,6 @@
+<li class="spid-idp-button-link" data-idp="{{ idp.id }}">
+    <a href="{{ url("spid.saml_controller_login", {idp: idp.id}) }}"><span
+                class="spid-sr-only">{{ idp.label }}</span><img src="/{{ imagesPath }}/{{ idp.getLogo('svg') }}"
+                                                                onerror="this.src='/{{ imagesPath }}/{{ idp.getLogo('png') }}'; this.onerror=null;"
+                                                                alt="{{ idp.label }}"/></a>
+</li>

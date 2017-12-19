@@ -1,0 +1,16 @@
+{
+  "name": "drupal/spid",
+  "type": "drupal-module",
+  "description": "Allows users to authenticate against an Italian IDP using SPID.",
+  "keywords": ["Drupal"],
+  "license": "GPL-2.0+",
+  "homepage": "http://drupal.org/project/spid",
+  "minimum-stability": "dev",
+  "support": {
+    "issues": "http://drupal.org/project/spid",
+    "source": "http://cgit.drupalcode.org/spid"
+  },
+  "require": {
+    "onelogin/php-saml": "~2.5"
+  }
+}
