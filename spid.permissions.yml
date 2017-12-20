@@ -1,0 +1,4 @@
+view sp metadata:
+  title: 'View Service Provider metadata'
+configure spid:
+  title: 'Configure SPID authentication'

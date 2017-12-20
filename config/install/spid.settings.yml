@@ -1,0 +1,31 @@
+sp_entity_id: 'https://drupal'
+sp_cert_folder: ''
+sp_x509_certificate: ''
+sp_private_key: ''
+sp_metadata_attributes:
+  fiscalNumber: fiscalNumber
+  name: 0
+  familyName: 0
+  dateOfBirth: 0
+  email: email
+  gender: 0
+  idCard: 0
+  expirationDate: 0
+  placeOfBirth: 0
+  countyOfBirth: 0
+  digitalAddress: 0
+  mobilePhone: 0
+  companyName: 0
+  registeredOffice: 0
+  ivaCode: 0
+  spidCode: 0
+idp_list:
+  spid-testenv-identityserver: spid-testenv-identityserver
+idp_test_entityid: idp.spid.gov.it
+idp_test_sso: 'https://idp.spid.gov.it:9443/samlsso'
+idp_test_slo: 'https://idp.spid.gov.it:9443/samlsso'
+idp_test_x509cert: MIICNTCCAZ6gAwIBAgIES343gjANBgkqhkiG9w0BAQUFADBVMQswCQYDVQQGEwJVUzELMAkGA1UECAwCQ0ExFjAUBgNVBAcMDU1vdW50YWluIFZpZXcxDTALBgNVBAoMBFdTTzIxEjAQBgNVBAMMCWxvY2FsaG9zdDAeFw0xMDAyMTkwNzAyMjZaFw0zNTAyMTMwNzAyMjZaMFUxCzAJBgNVBAYTAlVTMQswCQYDVQQIDAJDQTEWMBQGA1UEBwwNTW91bnRhaW4gVmlldzENMAsGA1UECgwEV1NPMjESMBAGA1UEAwwJbG9jYWxob3N0MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCUp/oV1vWc8/TkQSiAvTousMzOM4asB2iltr2QKozni5aVFu818MpOLZIr8LMnTzWllJvvaA5RAAdpbECb+48FjbBe0hseUdN5HpwvnH/DW8ZccGvk53I6Orq7hLCv1ZHtuOCokghz/ATrhyPq+QktMfXnRS4HrKGJTzxaCcU7OQIDAQABoxIwEDAOBgNVHQ8BAf8EBAMCBPAwDQYJKoZIhvcNAQEFBQADgYEAW5wPR7cr1LAdq+IrR44iQlRG5ITCZXY9hI0PygLP2rHANh+PYfTmxbuOnykNGyhM6FjFLbW2uZHQTY1jMrPprjOrmyK5sjJR
+strict: 1
+security_authn_requests_sign: 1
+security_messages_sign: 1
+security_request_authn_context: 'https://www.spid.gov.it/SpidL1'

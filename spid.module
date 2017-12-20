@@ -1,0 +1,110 @@
+<?php
+
+/**
+ * @file
+ * Contains spid.module.
+ */
+
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Template\Attribute;
+use Drupal\spid\SamlService;
+use Drupal\user\UserInterface;
+
+/**
+ * Implements hook_user_presave().
+ */
+function spid_user_presave(UserInterface $account) {
+  // Hook into the user creation process from ExternalAuth::register() so that
+  // we don't need to save the new user a second time to add our SAML attribute
+  // values into the new user object. The way externalauth prefixes account
+  // names acts as a recursion stop, in case any called code (e.g. event) saves
+  // the account.
+  if ($account->isNew() && strpos($account->getAccountName(), 'spid_') === 0) {
+    /** @var \Drupal\spid\SamlServiceInterface $samlService */
+    $samlService = \Drupal::service('spid.saml');
+    $samlService->synchronizeUserAttributes($account, TRUE);
+  }
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function spid_form_user_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  /** @var \Drupal\externalauth\Authmap $authMap */
+  $authMap = \Drupal::service('externalauth.authmap');
+
+  /** @var \Drupal\Core\Session\AccountProxyInterface $user */
+  $user = \Drupal::currentUser();
+
+  /** @var \Drupal\Core\Config\ImmutableConfig $config */
+  $config = \Drupal::config('spid.settings');
+
+  if ($authMap->get($user->id(), 'spid')) {
+    $form['account']['mail']['#disabled'] = TRUE;
+    $form['account']['current_pass']['#access'] = FALSE;
+    $form['account']['pass']['#access'] = FALSE;
+
+    foreach (SamlService::getSPIDAttributes() as $key => $attribute) {
+      if (($field = $config->get('user_' . $key)) !== 'none') {
+        $form[$field]['#disabled'] = TRUE;
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_theme().
+ */
+function spid_theme() {
+  return [
+    'spid_idps' => [
+      'template' => 'spid_idps',
+      'variables' => [
+        'idps' => NULL,
+        'imagesPath' => '',
+        'size' => 'medium',
+      ],
+    ],
+    'spid_idp' => [
+      'template' => 'spid_idp',
+      'variables' => [
+        'idp' => NULL,
+        'imagesPath' => '',
+      ],
+    ],
+  ];
+}
+
+/**
+ * Implements hook_preprocess_spid_idps(().
+ */
+function spid_preprocess_spid_idps(&$variables) {
+  switch ($variables['size']) {
+    case 'small':
+      $anchorClass = 'italia-it-button-size-s';
+      $anchorData = '#spid-idp-button-small-get';
+      $listId = 'spid-idp-button-small-get';
+      break;
+    case 'large':
+      $anchorClass = 'italia-it-button-size-l';
+      $anchorData = '#spid-idp-button-large-get';
+      $listId = 'spid-idp-button-large-get';
+      break;
+    case 'xlarge':
+      $anchorClass = 'italia-it-button-size-xl';
+      $anchorData = '#spid-idp-button-xlarge-get';
+      $listId = 'spid-idp-button-xlarge-get';
+      break;
+    default:
+      $anchorClass = 'italia-it-button-size-m';
+      $anchorData = '#spid-idp-button-medium-get';
+      $listId = 'spid-idp-button-medium-get';
+      break;
+  }
+
+  $variables['anchor_attributes'] = new Attribute([
+    'class' => $anchorClass,
+    'spid-idp-button' => $anchorData,
+  ]);
+  $variables['list_attributes'] = new Attribute(['id' => $listId]);
+}
