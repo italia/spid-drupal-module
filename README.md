@@ -1,12 +1,15 @@
 # Description
 
-The SPID authentication module provides ...
+Allows users to authenticate against the Italian SPID system.
+
+This module is based on the SAML Authentication module and it use a slightly modified version of the
+[Onelogin PHP-SAML library](https://github.com/onelogin/php-saml) that allows a super easy setup of a SAML Service
+Provider.
 
 # Installation
 
-This module requires the [Onelogin PHP-SAML library](https://github.com/onelogin/php-saml) with a little patch to made
-it compatibile with SPID requirements. To download the library and apply the patch the preferred method is to use
-Composer. In the main composer.json of your project add:
+To download the Onelogin PHP-SAML library library and apply the patch the preferred method is to use Composer. In the
+main composer.json of your website add:
 
 ```
 "cweagans/composer-patches": "~1.0",
@@ -27,13 +30,12 @@ in the *require* section and then:
 
 as a root element.
 
-After running *composer update* you can just install the module as usual (using Drush, Drupal console or with the Web
-UI).
+After running *composer update* you can install the module as usual (using Drush, Drupal console or with the Web UI).
 
 # Usage
  
-The module is pre-configured with the data from all supported Identity Provider and with the data of the test Identity
-Provider (https://idp.spid.gov.it:8080).
+The module is pre-configured with the data from all supported Identity Provider and with the data of the [test Identity
+Provider](https://idp.spid.gov.it:8080).
 
 ## Configuration
 
@@ -43,6 +45,6 @@ Provider (https://idp.spid.gov.it:8080).
 
 ## Test with the test Identity Provider
 
-The module expose the SAML metadata at the url `/saml/metadata`, copy the relevant values in the form at
-https://idp.spid.gov.it:8080 and click save. Then in the module configuration enable the Test idp in the *Enabled
+The module expose the SAML metadata at the url `/saml/metadata`, copy the relevant values in the form [here](https://idp.spid.gov.it:8080) 
+and click save. Then in the module configuration enable the Test idp in the *Enabled
 identity providers* section. You can now login to you site with the users listed [here](https://idp.spid.gov.it:8080/#/publicusers). 
