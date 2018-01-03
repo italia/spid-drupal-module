@@ -2,11 +2,10 @@
 
 namespace Drupal\spid\Plugin\Spid\Idp;
 
-use Drupal\spid\Annotation\Idp;
 use Drupal\spid\IdpInterface;
 
 /**
- * Class Namirial
+ * Class Namirial.
  *
  * @Idp(
  *   id = "spid-idp-namirialid",
@@ -52,12 +51,13 @@ class Namirial implements IdpInterface {
     switch ($type) {
       case 'png':
         return 'spid-idp-namirialid.png';
-        break;
+
       case 'svg':
         return 'spid-idp-namirialid.svg';
-        break;
+
     }
 
     return '';
   }
+
 }

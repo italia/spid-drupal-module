@@ -66,11 +66,15 @@ class SamlService implements SamlServiceInterface {
   protected $eventDispatcher;
 
   /**
+   * The idp plugin manager.
+   *
    * @var \Drupal\spid\IdpPluginManager
    */
   private $idpPluginManager;
 
   /**
+   * The session service.
+   *
    * @var \Symfony\Component\HttpFoundation\Session\Session
    */
   private $session;
@@ -89,7 +93,9 @@ class SamlService implements SamlServiceInterface {
    * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $event_dispatcher
    *   The event dispatcher.
    * @param \Drupal\spid\IdpPluginManager $idpPluginManager
+   *   The idp plugin manager.
    * @param \Symfony\Component\HttpFoundation\Session\Session $session
+   *   The session service.
    */
   public function __construct(ExternalAuth $external_auth, ConfigFactoryInterface $config_factory, EntityTypeManagerInterface $entity_type_manager, LoggerInterface $logger, EventDispatcherInterface $event_dispatcher, IdpPluginManager $idpPluginManager, Session $session) {
     $this->externalAuth = $external_auth;
@@ -153,7 +159,7 @@ class SamlService implements SamlServiceInterface {
       // We have one or multiple error types / short descriptions, and one
       // 'reason' for the last error.
       throw new RuntimeException('Error(s) encountered during processing of ACS response. Type(s): ' . implode(', ', array_unique($errors)) . '; reason given for last error: ' . $this->getspid($idp)
-          ->getLastErrorReason());
+        ->getLastErrorReason());
     }
 
     if (!$this->isAuthenticated()) {
@@ -275,7 +281,7 @@ class SamlService implements SamlServiceInterface {
   /**
    * {@inheritdoc}
    */
-  public static function getSPIDAttributes() {
+  public static function getSpidAttributes() {
     $t = \Drupal::translation();
     return [
       'fiscalNumber' => $t->translate('Fiscal number'),
@@ -298,8 +304,11 @@ class SamlService implements SamlServiceInterface {
   }
 
   /**
-   * @return bool if a valid user was fetched from the saml assertion this
-   *   request.
+   * Returns TRUE if a valid user was fetched from the saml assertion.
+   *
+   * @return bool
+   *   TRUE if a valid user was fetched from the saml assertion this request,
+   *   FALSE otherwise.
    */
   protected function isAuthenticated() {
     return $this->getspid()->isAuthenticated();
@@ -308,13 +317,15 @@ class SamlService implements SamlServiceInterface {
   /**
    * Returns an initialized Auth class from the SAML Toolkit.
    *
-   * @param $idp
+   * @param string $idp
+   *   The idp to use.
    *
    * @return \OneLogin_Saml2_Auth
+   *   The Authn assertion.
    */
   protected function getspid($idp = NULL) {
     if (!isset($this->spid)) {
-      $this->spid = new OneLogin_Saml2_Auth($this->reformatConfig($idp, $this->config));
+      $this->spid = new OneLogin_Saml2_Auth($this->reformatConfig($this->config, $idp));
     }
 
     return $this->spid;
@@ -323,14 +334,15 @@ class SamlService implements SamlServiceInterface {
   /**
    * Returns a configuration array as used by the external library.
    *
-   * @param $idp
    * @param \Drupal\Core\Config\ImmutableConfig $config
    *   The module configuration.
+   * @param string $idp
+   *   The idp to use.
    *
-   * @return array The library configuration array.
+   * @return array
    *   The library configuration array.
    */
-  protected function reformatConfig($idp = NULL, ImmutableConfig $config) {
+  protected function reformatConfig(ImmutableConfig $config, $idp = NULL) {
     // Check if we want to load the certificates from a folder. Either folder or
     // cert+key settings should be defined. If both are defined, "folder" is the
     // preferred method and we ignore cert/path values; we don't do more
@@ -397,7 +409,7 @@ class SamlService implements SamlServiceInterface {
       $output['idp'] = $idpPlugin->getConfig();
     }
 
-    $attributesMapping = SamlService::getSPIDAttributes();
+    $attributesMapping = SamlService::getSpidAttributes();
     foreach ($config->get('sp_metadata_attributes') as $attribute) {
       if ($attribute !== 0) {
         $output['sp']['attributeConsumingService']['requestedAttributes'][] = [

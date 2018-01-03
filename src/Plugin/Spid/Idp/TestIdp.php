@@ -4,12 +4,11 @@ namespace Drupal\spid\Plugin\Spid\Idp;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
-use Drupal\spid\Annotation\Idp;
 use Drupal\spid\IdpInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Class TestIdp
+ * Class TestIdp.
  *
  * @Idp(
  *   id = "spid-testenv-identityserver",
@@ -19,6 +18,8 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class TestIdp implements IdpInterface, ContainerFactoryPluginInterface {
 
   /**
+   * The immutable configuration object.
+   *
    * @var \Drupal\Core\Config\ImmutableConfig
    */
   private $config;
@@ -27,9 +28,13 @@ class TestIdp implements IdpInterface, ContainerFactoryPluginInterface {
    * TestIdp constructor.
    *
    * @param array $configuration
+   *   A configuration array containing information about the plugin instance.
    * @param string $plugin_id
+   *   The plugin ID for the plugin instance.
    * @param mixed $plugin_definition
+   *   The plugin implementation definition.
    * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
+   *   The config factory service.
    */
   public function __construct(array $configuration, $plugin_id, $plugin_definition, ConfigFactoryInterface $config_factory) {
     $this->config = $config_factory->get('spid.settings');
@@ -84,12 +89,13 @@ class TestIdp implements IdpInterface, ContainerFactoryPluginInterface {
     switch ($type) {
       case 'png':
         return 'spid-idp-testid.png';
-        break;
+
       case 'svg':
         return 'spid-idp-testid.svg';
-        break;
+
     }
 
     return '';
   }
+
 }

@@ -2,11 +2,10 @@
 
 namespace Drupal\spid\Plugin\Spid\Idp;
 
-use Drupal\spid\Annotation\Idp;
 use Drupal\spid\IdpInterface;
 
 /**
- * Class Infocert
+ * Class Infocert.
  *
  * @Idp(
  *   id = "spid-idp-infocertid",
@@ -52,12 +51,13 @@ class Infocert implements IdpInterface {
     switch ($type) {
       case 'png':
         return 'spid-idp-infocertid.png';
-        break;
+
       case 'svg':
         return 'spid-idp-infocertid.svg';
-        break;
+
     }
 
     return '';
   }
+
 }

@@ -49,7 +49,7 @@ class SpidUserSyncEvent extends Event {
   /**
    * Gets the Drupal user entity.
    *
-   * @return \Drupal\user\UserInterface $account
+   * @return \Drupal\user\UserInterface
    *   The Drupal user account.
    */
   public function getAccount() {

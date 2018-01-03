@@ -2,11 +2,10 @@
 
 namespace Drupal\spid\Plugin\Spid\Idp;
 
-use Drupal\spid\Annotation\Idp;
 use Drupal\spid\IdpInterface;
 
 /**
- * Class TestIdp
+ * Class TestIdp.
  *
  * @Idp(
  *   id = "spid-idp-posteid",
@@ -52,12 +51,13 @@ class Poste implements IdpInterface {
     switch ($type) {
       case 'png':
         return 'spid-idp-posteid.png';
-        break;
+
       case 'svg':
         return 'spid-idp-posteid.svg';
-        break;
+
     }
 
     return '';
   }
+
 }

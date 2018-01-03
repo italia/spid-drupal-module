@@ -67,10 +67,10 @@ class UserSyncEventSubscriber implements EventSubscriberInterface {
    *   The config factory.
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
    *   The EntityTypeManager service.
-   * @param \Egulias\EmailValidator\EmailValidator $email_validator
-   *   The email validator.
    * @param \Drupal\Core\TypedData\TypedDataManagerInterface $typed_data_manager
    *   The typed data manager.
+   * @param \Egulias\EmailValidator\EmailValidator $email_validator
+   *   The email validator.
    * @param \Psr\Log\LoggerInterface $logger
    *   A logger instance.
    */
@@ -138,17 +138,15 @@ class UserSyncEventSubscriber implements EventSubscriberInterface {
             $account->setUsername($name);
           }
           else {
-            $error = 'An account with the username @username already exists.';
             if ($account->isNew()) {
-              $fatal_errors[] = t($error, ['@username' => $name]);
+              $fatal_errors[] = t('An account with the username @username already exists.', ['@username' => $name]);
             }
             else {
               // We continue and keep the old name. A DSM should be OK here
               // since login only happens interactively. (And we're ignoring
               // the law of dependency injection for this.)
-              $error = "Error updating user name from SAML attribute: $error";
-              $this->logger->error($error, ['@username' => $name]);
-              drupal_set_message(t($error, ['@username' => $name]), 'error');
+              $this->logger->error('Error updating user name from SAML attribute fiscalNumber');
+              drupal_set_message(t('Error updating user name from SAML attribute fiscalNumber'), 'error');
             }
           }
         }
@@ -165,7 +163,7 @@ class UserSyncEventSubscriber implements EventSubscriberInterface {
 
             $account->setEmail($mail);
             if ($account->isNew()) {
-              // externalauth sets init to a non e-mail value so we will fix it.
+              // Externalauth sets init to a non e-mail value so we will fix it.
               $account->set('init', $mail);
             }
           }
@@ -180,7 +178,7 @@ class UserSyncEventSubscriber implements EventSubscriberInterface {
       }
     }
 
-    foreach (SamlService::getSPIDAttributes() as $key => $attribute) {
+    foreach (SamlService::getSpidAttributes() as $key => $attribute) {
       $this->setFieldValue($event, $account, 'user_' . $key, $key);
     }
 
@@ -188,15 +186,20 @@ class UserSyncEventSubscriber implements EventSubscriberInterface {
 
     if ($fatal_errors) {
       // Cancel the whole login process and/or account creation.
-      throw new \RuntimeException('Error(s) encountered during SAML attribute synchronization: ' . join(' // ', $fatal_errors));
+      throw new \RuntimeException('Error(s) encountered during SAML attribute synchronization: ' . implode(' // ', $fatal_errors));
     }
   }
 
   /**
-   * @param $attribute
-   * @param \Drupal\spid\Event\SpidUserSyncEvent $event
+   * Extracts an attribute from the event.
    *
-   * @return mixed
+   * @param string $attribute
+   *   The attribute to extract from the event.
+   * @param \Drupal\spid\Event\SpidUserSyncEvent $event
+   *   The UserSync event.
+   *
+   * @return string
+   *   The extracted attribute.
    */
   public function getAttribute($attribute, SpidUserSyncEvent $event) {
     $attributes = $event->getAttributes();
@@ -205,10 +208,19 @@ class UserSyncEventSubscriber implements EventSubscriberInterface {
   }
 
   /**
+   * Sets the value of an entity field.
+   *
+   * Sets the field with name $key in the entity $account with the value of the
+   * $attribute extracted from the $event.
+   *
    * @param \Drupal\spid\Event\SpidUserSyncEvent $event
+   *   The UserSync event.
    * @param \Drupal\user\UserInterface $account
-   * @param $key
-   * @param $attribute
+   *   A User entity.
+   * @param string $key
+   *   The field name.
+   * @param string $attribute
+   *   The attribute to extract from the event.
    */
   protected function setFieldValue(SpidUserSyncEvent $event, UserInterface &$account, $key, $attribute) {
     if (($field = $this->config->get($key)) != 'none' && $account->hasField($field)) {

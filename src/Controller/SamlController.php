@@ -4,7 +4,6 @@ namespace Drupal\spid\Controller;
 
 use Drupal\Component\Utility\UrlHelper;
 use Drupal\Core\Controller\ControllerBase;
-use Drupal\Core\Session\AccountProxyInterface;
 use Drupal\Core\Url;
 use Drupal\Core\Utility\Error;
 use Drupal\spid\SamlServiceInterface;
@@ -48,11 +47,7 @@ class SamlController extends ControllerBase {
   }
 
   /**
-   * Factory method for dependency injection container.
-   *
-   * @param \Symfony\Component\DependencyInjection\ContainerInterface $container
-   *
-   * @return static
+   * {@inheritdoc}
    */
   public static function create(ContainerInterface $container) {
     return new static(
@@ -73,9 +68,11 @@ class SamlController extends ControllerBase {
       // We don't return here unless something is fundamentally wrong inside the
       // SAML Toolkit sources.
       throw new Exception('Not redirected to SAML IDP');
-    } catch (Exception $e) {
+    }
+    catch (Exception $e) {
       $this->handleException($e, 'initiating SAML login');
     }
+
     return new RedirectResponse(Url::fromRoute('<front>', [], ['absolute' => TRUE])
       ->toString());
   }
@@ -84,6 +81,9 @@ class SamlController extends ControllerBase {
    * Initiate a SAML2 logout flow.
    *
    * This should redirect to the SLS service on the IDP and then to our SLS.
+   *
+   * @return \Symfony\Component\HttpFoundation\RedirectResponse
+   *   The controller response object.
    */
   public function logout() {
     try {
@@ -92,9 +92,11 @@ class SamlController extends ControllerBase {
       // We don't return here unless something is fundamentally wrong inside the
       // SAML Toolkit sources.
       throw new Exception('Not redirected to SAML IDP');
-    } catch (Exception $e) {
+    }
+    catch (Exception $e) {
       $this->handleException($e, 'initiating SAML logout');
     }
+
     return new RedirectResponse(Url::fromRoute('<front>', [], ['absolute' => TRUE])
       ->toString());
   }
@@ -103,11 +105,13 @@ class SamlController extends ControllerBase {
    * Displays service provider metadata XML for iDP autoconfiguration.
    *
    * @return \Symfony\Component\HttpFoundation\Response
+   *   The controller response object.
    */
   public function metadata() {
     try {
       $metadata = $this->saml->getMetadata();
-    } catch (Exception $e) {
+    }
+    catch (Exception $e) {
       $this->handleException($e, 'processing SAML SP metadata');
       return new RedirectResponse(Url::fromRoute('<front>', [], ['absolute' => TRUE])
         ->toString());
@@ -125,13 +129,15 @@ class SamlController extends ControllerBase {
    * service on the IDP should redirect (or: execute a POST request to) here.
    *
    * @return \Symfony\Component\HttpFoundation\RedirectResponse
+   *   The controller response object.
    */
   public function acs() {
     try {
       list($idp,) = $this->parseRelayState();
       $this->saml->acs($idp);
       $url = $this->getRedirectUrlAfterProcessing(TRUE);
-    } catch (Exception $e) {
+    }
+    catch (Exception $e) {
       $this->handleException($e, 'processing SAML authentication response');
       $url = Url::fromRoute('<front>', [], ['absolute' => TRUE])->toString();
     }
@@ -146,6 +152,7 @@ class SamlController extends ControllerBase {
    * IDP should redirect here.
    *
    * @return \Symfony\Component\HttpFoundation\RedirectResponse
+   *   The controller response object.
    */
   public function sls() {
     try {
@@ -154,7 +161,8 @@ class SamlController extends ControllerBase {
         $this->saml->sls($uid);
         $url = $this->getRedirectUrlAfterProcessing();
       }
-    } catch (Exception $e) {
+    }
+    catch (Exception $e) {
       $this->handleException($e, 'processing SAML single-logout response');
       $url = Url::fromRoute('<front>', [], ['absolute' => TRUE])->toString();
     }
@@ -237,12 +245,12 @@ class SamlController extends ControllerBase {
   /**
    * Displays error message and logs full exception.
    *
-   * @param $exception
+   * @param \Exception $exception
    *   The exception thrown.
    * @param string $while
    *   A description of when the error was encountered.
    */
-  protected function handleException($exception, $while = '') {
+  protected function handleException(Exception $exception, $while = '') {
     if ($while) {
       $while = " $while";
     }
@@ -259,10 +267,17 @@ class SamlController extends ControllerBase {
   }
 
   /**
-   * @param $data
-   *   The data to pass as relay state.
+   * Creates the RelayState.
+   *
+   * Concatenate the passed data with the URL from the
+   * 'destination' parameter, if any. We need this to pass data back with the
+   * SAML response.
+   *
+   * @param string $data
+   *   The data to pass as RelayState.
    *
    * @return string
+   *   The base64 encoded RelayState.
    */
   protected function createRelayState($data) {
     return base64_encode(implode('+', [
@@ -272,10 +287,17 @@ class SamlController extends ControllerBase {
   }
 
   /**
+   * Parses the RelayState.
+   *
+   * Decode and explode the RelayState received in the SAML response.
+   *
    * @return array
+   *   An array with data as the first element and the URL from the
+   *   'destination' parameter, if any, as the second parameter.
    */
   protected function parseRelayState() {
     return explode('+', base64_decode($this->requestStack->getCurrentRequest()
       ->get('RelayState')));
   }
+
 }

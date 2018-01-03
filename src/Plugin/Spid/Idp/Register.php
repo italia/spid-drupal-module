@@ -2,11 +2,10 @@
 
 namespace Drupal\spid\Plugin\Spid\Idp;
 
-use Drupal\spid\Annotation\Idp;
 use Drupal\spid\IdpInterface;
 
 /**
- * Class Register
+ * Class Register.
  *
  * @Idp(
  *   id = "spid-idp-spiditalia",
@@ -52,12 +51,13 @@ class Register implements IdpInterface {
     switch ($type) {
       case 'png':
         return 'spid-idp-spiditalia.png';
-        break;
+
       case 'svg':
         return 'spid-idp-spiditalia.svg';
-        break;
+
     }
 
     return '';
   }
+
 }

@@ -44,7 +44,7 @@ function spid_form_user_form_alter(&$form, FormStateInterface $form_state, $form
     $form['account']['current_pass']['#access'] = FALSE;
     $form['account']['pass']['#access'] = FALSE;
 
-    foreach (SamlService::getSPIDAttributes() as $key => $attribute) {
+    foreach (SamlService::getSpidAttributes() as $key => $attribute) {
       if (($field = $config->get('user_' . $key)) !== 'none') {
         $form[$field]['#disabled'] = TRUE;
       }
@@ -76,7 +76,7 @@ function spid_theme() {
 }
 
 /**
- * Implements hook_preprocess_spid_idps(().
+ * Implements hook_preprocess_spid_idps().
  */
 function spid_preprocess_spid_idps(&$variables) {
   switch ($variables['size']) {
@@ -85,16 +85,19 @@ function spid_preprocess_spid_idps(&$variables) {
       $anchorData = '#spid-idp-button-small-get';
       $listId = 'spid-idp-button-small-get';
       break;
+
     case 'large':
       $anchorClass = 'italia-it-button-size-l';
       $anchorData = '#spid-idp-button-large-get';
       $listId = 'spid-idp-button-large-get';
       break;
+
     case 'xlarge':
       $anchorClass = 'italia-it-button-size-xl';
       $anchorData = '#spid-idp-button-xlarge-get';
       $listId = 'spid-idp-button-xlarge-get';
       break;
+
     default:
       $anchorClass = 'italia-it-button-size-m';
       $anchorData = '#spid-idp-button-medium-get';

@@ -39,7 +39,7 @@ class SpidUserLinkEvent extends Event {
   /**
    * Gets the Drupal user account to link.
    *
-   * @return \Drupal\user\UserInterface $account
+   * @return \Drupal\user\UserInterface
    *   The Drupal user account.
    */
   public function getLinkedAccount() {

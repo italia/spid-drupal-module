@@ -3,8 +3,6 @@
 namespace Drupal\spid\Plugin\Block;
 
 use Drupal\Core\Access\AccessResult;
-use Drupal\Core\Annotation\Translation;
-use Drupal\Core\Block\Annotation\Block;
 use Drupal\Core\Block\BlockBase;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
@@ -25,29 +23,41 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class SpidLoginButton extends BlockBase implements ContainerFactoryPluginInterface {
 
   /**
-   * @var \Drupal\Core\Extension\ModuleHandlerInterface
-   */
-  private $moduleHandler;
-
-  /**
+   * The config factory service.
+   *
    * @var \Drupal\Core\Config\ConfigFactoryInterface
    */
   private $configFactory;
 
   /**
+   * The idp plugin manager.
+   *
    * @var \Drupal\spid\IdpPluginManager
    */
   private $idpPluginManager;
 
   /**
+   * The module handler service.
+   *
+   * @var \Drupal\Core\Extension\ModuleHandlerInterface
+   */
+  private $moduleHandler;
+
+  /**
    * IdpList constructor.
    *
    * @param array $configuration
+   *   A configuration array containing information about the plugin instance.
    * @param string $plugin_id
+   *   The plugin ID for the plugin instance.
    * @param mixed $plugin_definition
+   *   The plugin implementation definition.
    * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
+   *   The config factory service.
    * @param \Drupal\spid\IdpPluginManager $idp_plugin_manager
+   *   The idp plugin manager.
    * @param \Drupal\Core\Extension\ModuleHandlerInterface $module_handler
+   *   The module handler service.
    */
   public function __construct(array $configuration, $plugin_id, $plugin_definition, ConfigFactoryInterface $config_factory, IdpPluginManager $idp_plugin_manager, ModuleHandlerInterface $module_handler) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
@@ -118,7 +128,7 @@ class SpidLoginButton extends BlockBase implements ContainerFactoryPluginInterfa
     $plugins = $this->configFactory->get('spid.settings')
       ->get('idp_list');
     $imagesPath = $this->moduleHandler->getModule('spid')
-        ->getPath() . "/assets/img";
+      ->getPath() . "/assets/img";
 
     $idps = [];
     foreach ($plugins as $plugin) {

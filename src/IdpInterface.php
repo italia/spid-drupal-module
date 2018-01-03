@@ -37,6 +37,7 @@ interface IdpInterface {
    * Returns the idp logo in different formats.
    *
    * @param string $type
+   *   The type of the logo, png or svg.
    *
    * @return string
    *   The name of the logo image.

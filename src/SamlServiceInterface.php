@@ -3,7 +3,6 @@
 namespace Drupal\spid;
 
 use Drupal\user\UserInterface;
-use OneLogin_Saml2_Error;
 
 /**
  * Governs communication between the SAML toolkit and the IDP / login behavior.
@@ -11,16 +10,21 @@ use OneLogin_Saml2_Error;
 interface SamlServiceInterface {
 
   /**
-   * Show metadata about the local sp. Use this to configure your saml2 IDP
+   * Show metadata about the local sp. Use this to configure your saml2 IDP.
    *
-   * @return mixed xml string representing metadata
-   * @throws OneLogin_Saml2_Error
+   * @return mixed
+   *   Xml string representing metadata
+   *
+   * @throws \OneLogin_Saml2_Error
+   *   Error class of OneLogin PHP Toolkit.
    */
   public function getMetadata();
 
   /**
    * Initiates a SAML2 authentication flow and redirects to the IDP.
    *
+   * @param string $idp
+   *   The idp used for login.
    * @param string $return_to
    *   (optional) The path to return the user to after successful processing by
    *   the IDP.
@@ -30,7 +34,7 @@ interface SamlServiceInterface {
   /**
    * Initiates a SAML2 logout flow and redirects to the IdP.
    *
-   * @param null $return_to
+   * @param string $return_to
    *   (optional) The path to return the user to after successful processing by
    *   the IDP.
    */
@@ -43,7 +47,7 @@ interface SamlServiceInterface {
    * Drupal user (logs in / maps existing / create new) depending on attributes
    * sent in the request and our module configuration.
    *
-   * @param $idp
+   * @param string $idp
    *   The IDP to login to.
    */
   public function acs($idp);
@@ -51,7 +55,7 @@ interface SamlServiceInterface {
   /**
    * Does processing for the Single Logout Service if necessary.
    *
-   * @param $uid
+   * @param string $uid
    *   The user to log out.
    */
   public function sls($uid);
@@ -78,8 +82,11 @@ interface SamlServiceInterface {
   public function getAttributes();
 
   /**
+   * Returns a list of the predefined SPID attributes.
+   *
    * @return array
+   *   The list of the predefined SPID attributes.
    */
-  public static function getSPIDAttributes();
+  public static function getSpidAttributes();
 
 }

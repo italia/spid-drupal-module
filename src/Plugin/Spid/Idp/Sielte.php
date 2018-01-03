@@ -2,11 +2,10 @@
 
 namespace Drupal\spid\Plugin\Spid\Idp;
 
-use Drupal\spid\Annotation\Idp;
 use Drupal\spid\IdpInterface;
 
 /**
- * Class Sielte
+ * Class Sielte.
  *
  * @Idp(
  *   id = "spid-idp-sielteid",
@@ -52,12 +51,13 @@ class Sielte implements IdpInterface {
     switch ($type) {
       case 'png':
         return 'spid-idp-sielteid.png';
-        break;
+
       case 'svg':
         return 'spid-idp-sielteid.svg';
-        break;
+
     }
 
     return '';
   }
+
 }

@@ -18,16 +18,22 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class SpidConfigureForm extends ConfigFormBase {
 
   /**
+   * The entity field manager service.
+   *
    * @var \Drupal\Core\Entity\EntityFieldManagerInterface
    */
   private $fieldManager;
 
   /**
+   * The idp plugin manager.
+   *
    * @var \Drupal\spid\IdpPluginManager
    */
   private $idpPluginManager;
 
   /**
+   * The tags invalidator service.
+   *
    * @var \Drupal\Core\Cache\CacheTagsInvalidatorInterface
    */
   private $tagsInvalidator;
@@ -40,7 +46,9 @@ class SpidConfigureForm extends ConfigFormBase {
    * @param \Drupal\Core\Entity\EntityFieldManagerInterface $field_manager
    *   The entity field manager service.
    * @param \Drupal\spid\IdpPluginManager $idp_plugin_manager
+   *   The idp plugin manager.
    * @param \Drupal\Core\Cache\CacheTagsInvalidatorInterface $tags_invalidator
+   *   The tags invalidator service.
    */
   public function __construct(ConfigFactoryInterface $config_factory, EntityFieldManagerInterface $field_manager, IdpPluginManager $idp_plugin_manager, CacheTagsInvalidatorInterface $tags_invalidator) {
     parent::__construct($config_factory);
@@ -92,12 +100,18 @@ class SpidConfigureForm extends ConfigFormBase {
     $form['service_provider']['config_info'] = [
       '#theme' => 'item_list',
       '#items' => [
-        $this->t('Metadata URL') . ': ' . Url::fromRoute('spid.saml_controller_metadata', [], ['absolute' => TRUE])
-          ->toString(),
-        $this->t('Assertion Consumer Service') . ': ' . Url::fromRoute('spid.saml_controller_acs', [], ['absolute' => TRUE])
-          ->toString(),
-        $this->t('Single Logout Service') . ': ' . Url::fromRoute('spid.saml_controller_sls', [], ['absolute' => TRUE])
-          ->toString(),
+        $this->t('Metadata URL: @url', [
+          '@url' => Url::fromRoute('spid.saml_controller_metadata', [], ['absolute' => TRUE])
+            ->toString(),
+        ]),
+        $this->t('Assertion Consumer Service: @url', [
+          '@url' => Url::fromRoute('spid.saml_controller_acs', [], ['absolute' => TRUE])
+            ->toString(),
+        ]),
+        $this->t('Single Logout Service: @url', [
+          '@url' => Url::fromRoute('spid.saml_controller_sls', [], ['absolute' => TRUE])
+            ->toString(),
+        ]),
       ],
       '#empty' => [],
       '#list_type' => 'ul',
@@ -168,7 +182,7 @@ class SpidConfigureForm extends ConfigFormBase {
       '#title' => $this->t('Required attributes'),
       '#description' => $this->t('Choose which attributes we want returned from the Identity Provider. Notice that this list is used to populate the metadata, change this after that the metadata has been submitted to the different idp has no effect.'),
       '#default_value' => $config->get('sp_metadata_attributes'),
-      '#options' => SamlService::getSPIDAttributes(),
+      '#options' => SamlService::getSpidAttributes(),
     ];
 
     $form['identity_provider'] = [
@@ -254,7 +268,7 @@ class SpidConfigureForm extends ConfigFormBase {
       '#type' => 'fieldset',
     ];
 
-    foreach (SamlService::getSPIDAttributes() as $key => $attribute) {
+    foreach (SamlService::getSpidAttributes() as $key => $attribute) {
       $this->buildUserMappingFormElement($form, $key, $attribute);
     }
 
@@ -368,7 +382,7 @@ class SpidConfigureForm extends ConfigFormBase {
       ->set('security_request_authn_context', $form_state->getValue('security_request_authn_context'))
       ->set('strict', $form_state->getValue('strict'));
 
-    foreach (SamlService::getSPIDAttributes() as $key => $attribute) {
+    foreach (SamlService::getSpidAttributes() as $key => $attribute) {
       $this->config('spid.settings')
         ->set('user_' . $key, $form_state->getValue('user_' . $key));
     }
@@ -380,6 +394,12 @@ class SpidConfigureForm extends ConfigFormBase {
 
   /**
    * Remove trailing slash from a folder name, to unify config values.
+   *
+   * @param string $path
+   *   A filesystem path.
+   *
+   * @return string
+   *   The fixed filesystem path.
    */
   protected function fixFolderPath($path) {
     if ($path) {
@@ -390,6 +410,9 @@ class SpidConfigureForm extends ConfigFormBase {
 
   /**
    * Returns the list of fields defined for the User entity.
+   *
+   * @return array
+   *   The list of fields defined for the User entity.
    */
   protected function getUserFields() {
     $definitions = $this->fieldManager->getFieldDefinitions('user', 'user');
@@ -410,9 +433,9 @@ class SpidConfigureForm extends ConfigFormBase {
    *
    * @param array $form
    *   The config form.
-   * @param $key
+   * @param string $key
    *   The form element key.
-   * @param $title
+   * @param string $title
    *   The form element title.
    */
   protected function buildUserMappingFormElement(array &$form, $key, $title) {
