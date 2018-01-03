@@ -100,7 +100,7 @@ class SpidConfigureForm extends ConfigFormBase {
     $form['service_provider']['config_info'] = [
       '#theme' => 'item_list',
       '#items' => [
-        $this->t('Metadata URL: @url', [
+        $this->t('Metadata URL: <a href="@url">@url</a>', [
           '@url' => Url::fromRoute('spid.saml_controller_metadata', [], ['absolute' => TRUE])
             ->toString(),
         ]),
