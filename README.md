@@ -1,9 +1,11 @@
 # Description
 
-Allows users to authenticate against the Italian SPID system.
+Allows users to authenticate against the Italian
+[SPID](https://www.spid.gov.it/) system.
 
-This module is based on the SAML Authentication module and it use a slightly
-modified version of the
+This module is based on the
+[SAML Authentication module](https://www.drupal.org/project/samlauth) and it use
+a slightly modified version of the 
 [Onelogin PHP-SAML library](https://github.com/onelogin/php-saml) that allows a
 super easy setup of a SAML Service Provider.
 
@@ -24,8 +26,7 @@ in the *require* section and then:
 "extra": {
   "patches": {
     "onelogin/php-saml": {
-      "Compatibility with the Italian SPID system":
-        "https://www.drupal.org/files/issues/onelogin-php-saml-for-spid.patch"
+      "Compatibility with the Italian SPID system": "https://www.drupal.org/files/issues/onelogin-php-saml-for-spid.patch"
     }
   }
 },
@@ -33,8 +34,8 @@ in the *require* section and then:
 
 as a root element.
 
-After running *composer update* you can install the module as usual (using 
-Drush, Drupal console or with the Web UI).
+After running *composer update* you can enable the module as usual (using Drush,
+Drupal console or with the Web UI).
 
 # Usage
  
@@ -43,12 +44,9 @@ and with the data of the [test Identity Provider](https://idp.spid.gov.it:8080).
 
 ## Configuration
 
-* Navigate to `/admin/config/people/spid` and fill the form with all the data
-  related to your environment
-* Place the the *SPID login button* block somewhere in you layout and allow the
-  access only to anonymous users
-* Add a logout link to the user menu (or the menu you want) that points to
-  /saml/logout
+* Navigate to `/admin/config/people/spid` and fill the form with all the data related to your environment
+* Place the the *SPID login button* block somewhere in you layout and allow the access only to anonymous users
+* Add a logout link to the user menu (or the menu you want) that points to /saml/logout
 
 ## Test with the test Identity Provider
 
