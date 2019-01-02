@@ -6,23 +6,34 @@
  */
 
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\Template\Attribute;
-use Drupal\spid\SamlService;
+use Drupal\spid\SpidService;
 use Drupal\user\UserInterface;
+
+/**
+ * Implements hook_help().
+ */
+function spid_help($route_name) {
+  switch ($route_name) {
+    case 'spid.configure.metadata_idp':
+      $metadataFolder = \Drupal::config('spid.settings')
+        ->get('idp_metadata_folder');
+      return '<p>' . t('Download IDPs metadata to %metadata_folder.', ['%metadata_folder' => $metadataFolder]) . '</p>';
+  }
+}
 
 /**
  * Implements hook_user_presave().
  */
 function spid_user_presave(UserInterface $account) {
   // Hook into the user creation process from ExternalAuth::register() so that
-  // we don't need to save the new user a second time to add our SAML attribute
+  // we don't need to save the new user a second time to add our SPID attribute
   // values into the new user object. The way externalauth prefixes account
   // names acts as a recursion stop, in case any called code (e.g. event) saves
   // the account.
   if ($account->isNew() && strpos($account->getAccountName(), 'spid_') === 0) {
-    /** @var \Drupal\spid\SamlServiceInterface $samlService */
-    $samlService = \Drupal::service('spid.saml');
-    $samlService->synchronizeUserAttributes($account, TRUE);
+    /** @var \Drupal\spid\SpidServiceInterface $spid */
+    $spid = \Drupal::service('spid');
+    $spid->synchronizeUserAttributes($account, TRUE);
   }
 }
 
@@ -44,7 +55,7 @@ function spid_form_user_form_alter(&$form, FormStateInterface $form_state, $form
     $form['account']['current_pass']['#access'] = FALSE;
     $form['account']['pass']['#access'] = FALSE;
 
-    foreach (SamlService::getSpidAttributes() as $key => $attribute) {
+    foreach (SpidService::getSpidAttributes() as $key => $attribute) {
       if (($field = $config->get('user_' . $key)) !== 'none') {
         $form[$field]['#disabled'] = TRUE;
       }
@@ -57,57 +68,42 @@ function spid_form_user_form_alter(&$form, FormStateInterface $form_state, $form
  */
 function spid_theme() {
   return [
-    'spid_idps' => [
-      'template' => 'spid_idps',
+    'spid_smart_button' => [
+      'template' => 'spid_smart_button',
       'variables' => [
         'idps' => NULL,
-        'imagesPath' => '',
+        'img_folder' => NULL,
         'size' => 'medium',
       ],
     ],
-    'spid_idp' => [
-      'template' => 'spid_idp',
+    'spid_sp_access_button' => [
+      'template' => 'spid_sp_access_button',
       'variables' => [
-        'idp' => NULL,
-        'imagesPath' => '',
+        'img_folder' => NULL,
+        'size' => 'medium',
       ],
     ],
   ];
 }
 
 /**
- * Implements hook_preprocess_spid_idps().
+ * Implements hook_preprocess_spid_smart_button().
  */
-function spid_preprocess_spid_idps(&$variables) {
-  switch ($variables['size']) {
-    case 'small':
-      $anchorClass = 'italia-it-button-size-s';
-      $anchorData = '#spid-idp-button-small-get';
-      $listId = 'spid-idp-button-small-get';
-      break;
+function spid_preprocess_spid_smart_button(&$variables) {
+  $isTestenvEnabled = \Drupal::service('spid')
+    ->isTestenvEnabled();
 
-    case 'large':
-      $anchorClass = 'italia-it-button-size-l';
-      $anchorData = '#spid-idp-button-large-get';
-      $listId = 'spid-idp-button-large-get';
-      break;
+  $variables['is_testenv_enabled'] = $isTestenvEnabled;
+  $variables['img_folder'] = \Drupal::moduleHandler()->getModule('spid')->getPath();
+}
 
-    case 'xlarge':
-      $anchorClass = 'italia-it-button-size-xl';
-      $anchorData = '#spid-idp-button-xlarge-get';
-      $listId = 'spid-idp-button-xlarge-get';
-      break;
+/**
+ * Implements hook_preprocess_spid_sp_access_button().
+ */
+function spid_preprocess_spid_sp_access_button(&$variables) {
+  $isTestenvEnabled = \Drupal::service('spid')
+    ->isTestenvEnabled();
 
-    default:
-      $anchorClass = 'italia-it-button-size-m';
-      $anchorData = '#spid-idp-button-medium-get';
-      $listId = 'spid-idp-button-medium-get';
-      break;
-  }
-
-  $variables['anchor_attributes'] = new Attribute([
-    'class' => $anchorClass,
-    'spid-idp-button' => $anchorData,
-  ]);
-  $variables['list_attributes'] = new Attribute(['id' => $listId]);
+  $variables['is_testenv_enabled'] = $isTestenvEnabled;
+  $variables['img_folder'] = \Drupal::moduleHandler()->getModule('spid')->getPath();
 }

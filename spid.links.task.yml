@@ -1,0 +1,12 @@
+spid.configure:
+  title: 'Configure'
+  route_name: spid.configure
+  base_route: spid.configure
+spid.configure.metadata_sp:
+  title: 'SP metadata'
+  route_name: spid.configure.metadata_sp
+  base_route: spid.configure
+spid.configure.metadataidp:
+  title: 'IDP metadata'
+  route_name: spid.configure.metadata_idp
+  base_route: spid.configure

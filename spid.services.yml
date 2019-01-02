@@ -2,14 +2,14 @@ services:
   logger.channel.spid:
     parent: logger.channel_base
     arguments: ['spid']
-  spid.saml:
-    class: Drupal\spid\SamlService
-    arguments: ['@externalauth.externalauth', '@config.factory', '@entity_type.manager', '@logger.channel.spid', '@event_dispatcher', '@plugin.manager.spid_idp', '@session']
+  spid:
+    class: Drupal\spid\SpidService
+    arguments: ['@externalauth.externalauth', '@config.factory', '@entity_type.manager', '@logger.channel.spid', '@event_dispatcher', '@session']
+  spid.metadata:
+    class: Drupal\spid\MetadataService
+    arguments: ['@http_client', '@serialization.json']
   spid.event_subscriber.user_sync:
     class: Drupal\spid\EventSubscriber\UserSyncEventSubscriber
-    arguments: ['@config.factory', '@entity_type.manager', '@typed_data_manager', '@email.validator', '@logger.channel.spid']
+    arguments: ['@config.factory', '@entity_type.manager', '@typed_data_manager', '@email.validator', '@logger.channel.spid', '@messenger', '@string_translation']
     tags:
       - {name: event_subscriber}
-  plugin.manager.spid_idp:
-    class: Drupal\spid\IdpPluginManager
-    parent: default_plugin_manager

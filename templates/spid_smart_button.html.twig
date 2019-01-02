@@ -1,0 +1,39 @@
+{{ attach_library('spid/spid.smart_button') }}
+
+<div id='spid-button' aria-live="polite">
+    <noscript>
+        {{ 'To use the Spid Smart Button, please enable javascript!'|t }}
+    </noscript>
+</div>
+
+<script>
+    SPID.init({
+        lang: 'it',
+        selector: '#spid-button',
+        method: 'GET',
+        url: '/spid/login/{{ '{{' }}idp{{ '}}' }}',
+        mapping: {
+            {% for key, idp in idps %}
+            "{{ idp }}": "{{ key }}",
+            {% endfor %}
+        },
+        supported: [
+            {% for key, idp in idps %}
+            "{{ idp }}",
+            {% endfor %}
+        ],
+        {% if is_testenv_enabled %}
+        extraProviders: [
+            {
+                "protocols": ["SAML"],
+                "entityName": "Testenv",
+                "logo": "spid-idp-testenv2.svg",
+                "entityID": "test",
+                "active": true
+            }
+        ],
+        {% endif %}
+        protocol: "SAML",
+        size: "{{ size }}"
+    });
+</script>

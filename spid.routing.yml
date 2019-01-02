@@ -1,42 +1,56 @@
-spid.saml_controller_login:
-  path: '/saml/login/{idp}'
+spid.login:
+  path: '/spid/login/{idp}'
   defaults:
-    _controller: '\Drupal\spid\Controller\SamlController::login'
-    _title: 'SAML Login'
+    _controller: '\Drupal\spid\Controller\SpidController::login'
+    _title: 'SPID Login'
   requirements:
     _role: 'anonymous'
-spid.saml_controller_logout:
-  path: '/saml/logout'
+spid.logout:
+  path: '/spid/logout'
   defaults:
-    _controller: '\Drupal\spid\Controller\SamlController::logout'
-    _title: 'SAML Logout'
+    _controller: '\Drupal\spid\Controller\SpidController::logout'
+    _title: 'SPID Logout'
   requirements:
     _role: 'authenticated'
-spid.saml_controller_metadata:
-  path: '/saml/metadata'
+spid.metadata:
+  path: '/spid/metadata'
   defaults:
-    _controller: '\Drupal\spid\Controller\SamlController::metadata'
-    _title: 'SAML Metadata'
+    _controller: '\Drupal\spid\Controller\SpidController::metadata'
+    _title: 'SPID Metadata'
   requirements:
     _permission: 'view sp metadata'
-spid.saml_controller_acs:
-  path: '/saml/acs'
+spid.acs:
+  path: '/spid/acs'
   defaults:
-    _controller: '\Drupal\spid\Controller\SamlController::acs'
-    _title: 'SAML ACS'
+    _controller: '\Drupal\spid\Controller\SpidController::acs'
+    _title: 'SPID ACS'
   requirements:
     _role: 'anonymous'
-spid.saml_controller_sls:
-  path: '/saml/sls'
+spid.slo:
+  path: '/spid/slo'
   defaults:
-    _controller: '\Drupal\spid\Controller\SamlController::sls'
-    _title: 'SAML SLS'
+    _controller: '\Drupal\spid\Controller\SpidController::slo'
+    _title: 'SPID SLS'
   requirements:
-    _role: 'anonymous'
-spid.spid_configure_form:
+    _access: 'TRUE'
+spid.configure:
   path: '/admin/config/people/spid'
   defaults:
     _form: '\Drupal\spid\Form\SpidConfigureForm'
     _title: 'SPID Authentication'
+  requirements:
+    _permission: 'configure spid'
+spid.configure.metadata_sp:
+  path: '/admin/config/people/spid/metadata_sp'
+  defaults:
+    _form: '\Drupal\spid\Form\MetadataSPForm'
+    _title: 'Metadata of this Service Provider'
+  requirements:
+    _permission: 'configure spid'
+spid.configure.metadata_idp:
+  path: '/admin/config/people/spid/metadata_idp'
+  defaults:
+    _form: '\Drupal\spid\Form\MetadataIDPForm'
+    _title: 'Download IDPs metadata'
   requirements:
     _permission: 'configure spid'

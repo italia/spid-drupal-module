@@ -1,6 +1,6 @@
-spid.spid_configure_form:
+spid.configure:
   title: 'SPID Authentication'
   parent: user.admin_index
   description: 'Configure SPID authentication behaviors.'
   weight: -10
-  route_name: spid.spid_configure_form
+  route_name: spid.configure

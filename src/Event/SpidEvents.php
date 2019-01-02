@@ -13,16 +13,14 @@ final class SpidEvents {
    * Name of the event fired when searching for a user to match SAML attributes.
    *
    * The event allows modules to link existing user accounts to an authname
-   * through the externalauth mechanism (see externalauth module). It is only
-   * fired when no account is already linked and when no existing account can
-   * be found according to the module settings for basic required properties
-   * (username, email). The event listener method receives a
-   * Drupal\samlauth\Event\SamlAuthUserLinkEvent instance. If it finds an
-   * account to link, it should call the event's linkAccount() method.
+   * through the externalauth mechanism (see externalauth module).
+   * The event listener method receives a Drupal\spid\Event\SpidUserLinkEvent
+   * instance. If it finds an account to link, it should call the event's
+   * linkAccount() method.
    *
    * @Event
    *
-   * @see \Drupal\samlauth\Event\SpidUserLinkEvent
+   * @see \Drupal\spid\Event\SpidUserLinkEvent
    *
    * @var string
    */

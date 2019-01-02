@@ -12,8 +12,8 @@ msgstr ""
 msgid "Invalid e-mail address @mail"
 msgstr "L'indirizzo email @mail non è valido"
 
-msgid "Email address is not provided in SAML attribute."
-msgstr "L'indirizzo email non è presente tra gli attributi SAML"
+msgid "Email address is not provided in SPID attribute."
+msgstr "L'indirizzo email non è presente tra gli attributi SPID"
 
 msgid "Service Provider configuration"
 msgstr "Configurazione del Service Provider"
@@ -57,8 +57,8 @@ msgstr "Chiave privata di questo Service Provider. Non inserire caratteri di a c
 msgid "Certificate folder"
 msgstr "Cartella del certificato"
 
-msgid "Set the path to the folder containing a /certs subfolder and the /certs/sp.key (private key) and /certs/sp.crt (public cert) files. The names of the subfolder and files are mandated by the external SAML Toolkit library."
-msgstr "Imposta il percorso della cartella contentente la sotto-cartella /certs e i file /certs/sp.key (la chiave privata) e /certs/sp.crt (il certificato pubblico). Il nome della sotto-cartella e dei file sono stabiliti dalla libreria SAML."
+msgid "Set the path to the folder containing a /certs subfolder and the /certs/sp.key (private key) and /certs/sp.crt (public cert) files. The names of the subfolder and files are mandated by the external SPID Toolkit library."
+msgstr "Imposta il percorso della cartella contentente la sotto-cartella /certs e i file /certs/sp.key (la chiave privata) e /certs/sp.crt (il certificato pubblico). Il nome della sotto-cartella e dei file sono stabiliti dalla libreria SPID."
 
 msgid "Required attributes"
 msgstr "Arrtibuti richiesti"
@@ -105,8 +105,8 @@ msgstr "Opzioni di sicurezza"
 msgid "Strict mode"
 msgstr "Modalità strict"
 
-msgid "In strict mode, any validation failures or unsigned SAML messages which are requested to be signed (according to your settings) will cause the SAML conversation to be terminated. In production environments, this <em>must</em> be set."
-msgstr "Quando è abilitata la modalità strict qualsiasi fallimento nella validazione o qualsiasi messaggio SAML non firmato (quanto invece la firma è richiesta) causeranno la terminazione della conversazione SAML. In produzione <em>deve</em> essere abilitato."
+msgid "In strict mode, any validation failures or unsigned SPID messages which are requested to be signed (according to your settings) will cause the SPID conversation to be terminated. In production environments, this <em>must</em> be set."
+msgstr "Quando è abilitata la modalità strict qualsiasi fallimento nella validazione o qualsiasi messaggio SPID non firmato (quanto invece la firma è richiesta) causeranno la terminazione della conversazione SPID. In produzione <em>deve</em> essere abilitato."
 
 msgid "Sign authentication requests"
 msgstr "Firma le richieste di autenticazione"
@@ -204,20 +204,20 @@ msgstr "Autenticazione SPID"
 msgid "Configure SPID authentication behaviors."
 msgstr "Configura l'autenticazione mediante SPID."
 
-msgid "SAML Login"
-msgstr "Login SAML"
+msgid "SPID Login"
+msgstr "Login SPID"
 
-msgid "SAML Logout"
-msgstr "Logout SAML"
+msgid "SPID Logout"
+msgstr "Logout SPID"
 
-msgid "SAML Metadata"
-msgstr "Metadati SAML"
+msgid "SPID Metadata"
+msgstr "Metadati SPID"
 
-msgid "SAML ACS"
-msgstr "ACS SAML"
+msgid "SPID ACS"
+msgstr "ACS SPID"
 
-msgid "SAML SLS"
-msgstr "SLS SAML"
+msgid "SPID SLS"
+msgstr "SLS SPID"
 
 msgid "SPID login button"
 msgstr "Bottone di login SPID"

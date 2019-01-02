@@ -1,29 +1,18 @@
 {
   "name": "drupal/spid",
-  "description": "Allows users to authenticate against the Italian SPID system.",
   "type": "drupal-module",
-  "license": "GPL-2.0+",
+  "description": "Allows users to authenticate with the Italian SPID system.",
   "keywords": [
-    "SAML",
-    "SPID",
-    "Authentication"
+    "Drupal"
   ],
-  "homepage": "https://www.drupal.org/project/spid",
-  "authors": [
-    {
-      "name": "Luca Lusso",
-      "email": "llusso@wellnet.it",
-      "role": "Maintainer"
-    },
-    {
-      "name": "See contributors",
-      "homepage": "https://www.drupal.org/node/2924140/committers"
-    }
-  ],
+  "license": "GPL-2.0+",
+  "homepage": "http://drupal.org/project/spid",
+  "minimum-stability": "dev",
   "support": {
-    "issues": "https://www.drupal.org/project/issues/spid"
+    "issues": "http://drupal.org/project/spid",
+    "source": "http://cgit.drupalcode.org/spid"
   },
   "require": {
-    "onelogin/php-saml": "~2.5"
+    "italia/spid-php-lib": "v0.32"
   }
 }
