@@ -1,15 +1,3 @@
-spid.smart_button:
-  version: 2.0
-  css:
-    theme:
-      assets/spid-smart-button/spid-button.min.css: {}
-  js:
-    assets/spid-smart-button/spid-button.min.js: {}
-  dependencies:
-    - core/jquery
-    - core/drupal
-  header: true
-
 spid.sp_access_button:
   version: 2.0
   css:

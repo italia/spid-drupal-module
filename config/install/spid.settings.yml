@@ -22,3 +22,4 @@ sp_metadata_attributes:
   ivaCode: 0
   spidCode: 0
 spid_level: 2
+accepted_clock_skew_seconds: 300

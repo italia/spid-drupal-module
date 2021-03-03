@@ -9,6 +9,7 @@ use Drupal\spid\Event\SpidEvents;
 use Drupal\spid\Event\SpidUserLinkEvent;
 use Drupal\spid\Event\SpidUserSyncEvent;
 use Drupal\user\UserInterface;
+use Exception;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Session\Session;
@@ -107,7 +108,7 @@ class SpidService implements SpidServiceInterface {
       'sp_org_name' => $this->config->get('sp_org_name'),
       'sp_org_display_name' => $this->config->get('sp_org_display_name'),
       'idp_metadata_folder' => $this->config->get('idp_metadata_folder'),
-      'accepted_clock_skew_seconds' => 3600,
+      'accepted_clock_skew_seconds' => $this->config->get('accepted_clock_skew_seconds'),
     ];
 
     foreach ($this->config->get('sp_metadata_attributes') as $key => $attribute) {
@@ -124,10 +125,9 @@ class SpidService implements SpidServiceInterface {
    */
   public function getMetadata() {
     try {
-      $metadata = $this->spid->getSPMetadata();
-      return $metadata;
+      return $this->spid->getSPMetadata();
     }
-    catch (\Exception $e) {
+    catch (Exception $e) {
       return sprintf("<error>%s</error>", $e->getMessage());
     }
   }
@@ -234,7 +234,7 @@ class SpidService implements SpidServiceInterface {
         throw new \RuntimeException('Could not authenticate.');
       }
     }
-    catch (\Exception $e) {
+    catch (Exception $e) {
       \drupal::logger('spid')->error($e->getMessage());
       throw new \RuntimeException('Could not authenticate.');
     }

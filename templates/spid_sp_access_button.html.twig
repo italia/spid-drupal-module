@@ -1,6 +1,6 @@
 {{ attach_library('spid/spid.sp_access_button') }}
 
-<a href="#" class="italia-it-button italia-it-button-size-s button-spid" spid-idp-button="#spid-idp-button-{{ size }}-get" aria-haspopup="true" aria-expanded="false">
+<a href="#" class="italia-it-button italia-it-button-size-{{ size|slice(0, 1) }} button-spid" spid-idp-button="#spid-idp-button-{{ size }}-get" aria-haspopup="true" aria-expanded="false">
     <span class="italia-it-button-icon"><img src="/{{ img_folder }}/assets/spid-sp-access-button/img/spid-ico-circle-bb.svg" onerror="this.src='img/spid-ico-circle-bb.png'; this.onerror=null;" alt="" /></span>
     <span class="italia-it-button-text">Entra con SPID</span>
 </a>

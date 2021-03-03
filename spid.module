@@ -68,14 +68,6 @@ function spid_form_user_form_alter(&$form, FormStateInterface $form_state, $form
  */
 function spid_theme() {
   return [
-    'spid_smart_button' => [
-      'template' => 'spid_smart_button',
-      'variables' => [
-        'idps' => NULL,
-        'img_folder' => NULL,
-        'size' => 'medium',
-      ],
-    ],
     'spid_sp_access_button' => [
       'template' => 'spid_sp_access_button',
       'variables' => [
@@ -84,17 +76,6 @@ function spid_theme() {
       ],
     ],
   ];
-}
-
-/**
- * Implements hook_preprocess_spid_smart_button().
- */
-function spid_preprocess_spid_smart_button(&$variables) {
-  $isTestenvEnabled = \Drupal::service('spid')
-    ->isTestenvEnabled();
-
-  $variables['is_testenv_enabled'] = $isTestenvEnabled;
-  $variables['img_folder'] = \Drupal::moduleHandler()->getModule('spid')->getPath();
 }
 
 /**
