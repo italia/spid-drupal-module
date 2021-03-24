@@ -6,9 +6,3 @@ package: "User authentication"
 configure: spid.configure
 dependencies:
   - externalauth:externalauth
-
-# Information added by Drupal.org packaging script on 2017-12-12
-version: '8.x-1.2-beta2'
-core: '8.x'
-project: 'spid'
-datestamp: 1513070289

@@ -151,9 +151,9 @@ class SpidService implements SpidServiceInterface {
         $mailAttribute = 'email';
 
         $authName = $attributes[$nameAttribute];
-        $account = $this->externalAuth->load($authName[0], 'spid');
+        $account = $this->externalAuth->load($authName, 'spid');
         if (!$account) {
-          $this->logger->debug('No matching local users found for unique SPID ID @spid_id.', ['@spid_id' => $authName[0]]);
+          $this->logger->debug('No matching local users found for unique SPID ID @spid_id.', ['@spid_id' => $authName]);
 
           // Try to link an existing user: first through a custom event handler,
           // then by name, then by e-mail.
@@ -169,10 +169,10 @@ class SpidService implements SpidServiceInterface {
             // get a cryptic machine name because  synchronizeUserAttributes()
             // cannot assign the proper name while saving.)
             if ($account_search = $this->entityTypeManager->getStorage('user')
-              ->loadByProperties(['name' => $authName[0]])) {
+              ->loadByProperties(['name' => $authName])) {
               $account = reset($account_search);
               $this->logger->info('Matching local user @uid found for name @name (as provided in a SPID attribute); associating user and logging in.', [
-                '@name' => $authName[0],
+                '@name' => $authName,
                 '@uid' => $account->id(),
               ]);
             }
@@ -196,7 +196,7 @@ class SpidService implements SpidServiceInterface {
             // not-yet-linked user logs in, we will again try to link the
             // account in the same way and (falsely) log that we are associating
             // the user.
-            $this->externalAuth->linkExistingAccount($authName[0], 'spid', $account);
+            $this->externalAuth->linkExistingAccount($authName, 'spid', $account);
           }
         }
 
@@ -216,9 +216,9 @@ class SpidService implements SpidServiceInterface {
           // to hook into the save operation of the user account object that is
           // created by register(). It seems we can only do this by implementing
           // hook_user_presave() - which calls our synchronizeUserAttributes().
-          $account = $this->externalAuth->register($authName[0], 'spid');
+          $account = $this->externalAuth->register($authName, 'spid');
 
-          $this->externalAuth->userLoginFinalize($account, $authName[0], 'spid');
+          $this->externalAuth->userLoginFinalize($account, $authName, 'spid');
         }
         elseif ($account->isBlocked()) {
           throw new \RuntimeException('Requested account is blocked.');
@@ -227,7 +227,7 @@ class SpidService implements SpidServiceInterface {
           // Synchronize the user account with SPID attributes if needed.
           $this->synchronizeUserAttributes($account);
 
-          $this->externalAuth->userLoginFinalize($account, $authName[0], 'spid');
+          $this->externalAuth->userLoginFinalize($account, $authName, 'spid');
         }
       }
       else {
