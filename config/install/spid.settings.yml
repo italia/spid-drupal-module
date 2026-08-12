@@ -23,3 +23,4 @@ sp_metadata_attributes:
   spidCode: 0
 spid_level: 2
 accepted_clock_skew_seconds: 300
+link_existing_accounts: false

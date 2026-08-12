@@ -147,46 +147,16 @@ class SpidService implements SpidServiceInterface {
       if ($this->spid->isAuthenticated()) {
         $attributes = $this->getAttributes();
 
-        $nameAttribute = 'fiscalNumber';
-        $mailAttribute = 'email';
+        if (empty($attributes['fiscalNumber'])) {
+          throw new \RuntimeException('The SPID response carries no fiscalNumber attribute.');
+        }
+        $authName = $attributes['fiscalNumber'];
 
-        $authName = $attributes[$nameAttribute];
         $account = $this->externalAuth->load($authName, 'spid');
         if (!$account) {
           $this->logger->debug('No matching local users found for unique SPID ID @spid_id.', ['@spid_id' => $authName]);
 
-          // Try to link an existing user: first through a custom event handler,
-          // then by name, then by e-mail.
-          $event = new SpidUserLinkEvent($attributes);
-          $this->eventDispatcher->dispatch(spidEvents::USER_LINK, $event);
-          $account = $event->getLinkedAccount();
-
-          if (!$account) {
-            // The linking by name / e-mail cannot be bypassed at this point
-            // because it makes no sense to create a new account from the SPID
-            // attributes if one of these two basic properties is already in
-            // use. (In this case a newly created and logged-in account would
-            // get a cryptic machine name because  synchronizeUserAttributes()
-            // cannot assign the proper name while saving.)
-            if ($account_search = $this->entityTypeManager->getStorage('user')
-              ->loadByProperties(['name' => $authName])) {
-              $account = reset($account_search);
-              $this->logger->info('Matching local user @uid found for name @name (as provided in a SPID attribute); associating user and logging in.', [
-                '@name' => $authName,
-                '@uid' => $account->id(),
-              ]);
-            }
-            else {
-              if ($account_search = $this->entityTypeManager->getStorage('user')
-                ->loadByProperties(['mail' => $mailAttribute])) {
-                $account = reset($account_search);
-                $this->logger->info('Matching local user @uid found for e-mail @mail (as provided in a SPID attribute); associating user and logging in.', [
-                  '@mail' => $mailAttribute,
-                  '@uid' => $account->id(),
-                ]);
-              }
-            }
-          }
+          $account = $this->findLinkableAccount($attributes, $authName);
 
           if ($account) {
             // There is a chance that the following call will not actually link
@@ -238,6 +208,87 @@ class SpidService implements SpidServiceInterface {
       \drupal::logger('spid')->error($e->getMessage());
       throw new \RuntimeException('Could not authenticate.');
     }
+  }
+
+  /**
+   * Finds a pre-existing local account the SPID identity may be linked to.
+   *
+   * Linking an incoming SPID identity to an account that already exists locally
+   * hands whoever controls that identity the permissions of that account, and
+   * the values it is matched on come from the SAML response. This used to match
+   * the fiscalNumber against the Drupal user name, which meant a response
+   * carrying an administrator's user name as the fiscalNumber logged the caller
+   * in as that administrator. Automatic linking is therefore off by default,
+   * never matches the user name, and never yields a privileged account.
+   *
+   * @param array $attributes
+   *   The attributes returned by the Identity Provider.
+   * @param string $authName
+   *   The SPID identifier the account would be linked to.
+   *
+   * @return \Drupal\user\UserInterface|false
+   *   The account to link, or FALSE when there is none.
+   */
+  protected function findLinkableAccount(array $attributes, $authName) {
+    // A site specific handler is code the site deliberately installed, so it is
+    // consulted regardless of the setting below.
+    $event = new SpidUserLinkEvent($attributes);
+    $this->eventDispatcher->dispatch(SpidEvents::USER_LINK, $event);
+    $account = $event->getLinkedAccount();
+
+    if (!$account && $this->config->get('link_existing_accounts') && !empty($attributes['email'])) {
+      // Opt in, and by e-mail only. Note the previous implementation searched
+      // for the literal string 'email' rather than the attribute value, so this
+      // branch never actually matched anything.
+      $account_search = $this->entityTypeManager->getStorage('user')
+        ->loadByProperties(['mail' => $attributes['email']]);
+      if ($account_search) {
+        $account = reset($account_search);
+        $this->logger->info('Matching local user @uid found for e-mail @mail (as provided in a SPID attribute); associating user and logging in.', [
+          '@mail' => $attributes['email'],
+          '@uid' => $account->id(),
+        ]);
+      }
+    }
+
+    if ($account && $this->isPrivileged($account)) {
+      $this->logger->warning('Refusing to link SPID identity @spid_id to local account @uid, which holds administrative privileges.', [
+        '@spid_id' => $authName,
+        '@uid' => $account->id(),
+      ]);
+      throw new \RuntimeException('Refusing to link a SPID identity to a privileged local account.');
+    }
+
+    return $account;
+  }
+
+  /**
+   * Whether an account holds administrative privileges.
+   *
+   * @param \Drupal\user\UserInterface $account
+   *   The account to check.
+   *
+   * @return bool
+   *   TRUE when the account must never be linked to automatically.
+   */
+  protected function isPrivileged(UserInterface $account) {
+    if ((int) $account->id() === 1) {
+      return TRUE;
+    }
+    // Permissions that let the holder grant themselves anything else.
+    foreach (['administer permissions', 'administer users', 'administer site configuration'] as $permission) {
+      if ($account->hasPermission($permission)) {
+        return TRUE;
+      }
+    }
+    $role_storage = $this->entityTypeManager->getStorage('user_role');
+    foreach ($account->getRoles(TRUE) as $rid) {
+      $role = $role_storage->load($rid);
+      if ($role && $role->isAdmin()) {
+        return TRUE;
+      }
+    }
+    return FALSE;
   }
 
   /**
