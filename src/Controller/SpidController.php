@@ -81,6 +81,19 @@ class SpidController extends ControllerBase {
   public function login($idp) {
     $level = $this->config('spid.settings')->get('spid_level');
 
+    // {idp} comes straight from the URL. The metadata of the selected Identity
+    // Provider supplies the certificate that will validate the SAML response, so
+    // the value is only ever accepted when it names one of the Identity
+    // Providers this site has metadata for.
+    if (!array_key_exists($idp, $this->spid->getIdpList())) {
+      $this->handleException(
+        new Exception(sprintf('Unknown Identity Provider "%s" requested', $idp)),
+        'initiating SPID login'
+      );
+      return new RedirectResponse(Url::fromRoute('<front>', [], ['absolute' => TRUE])
+        ->toString());
+    }
+
     try {
       $this->spid->login($idp, $level, "/user");
       throw new Exception('Not redirected to SPID IDP');

@@ -13,6 +13,6 @@
     "source": "http://cgit.drupalcode.org/spid"
   },
   "require": {
-    "italia/spid-php-lib": "v0.35"
+    "italia/spid-php-lib": "^0.36"
   }
 }

@@ -163,6 +163,13 @@ class SpidConfigureForm extends ConfigFormBase {
       '#type' => 'fieldset',
     ];
 
+    $form['user_info']['link_existing_accounts'] = [
+      '#default_value' => $config->get('link_existing_accounts'),
+      '#description' => $this->t('When a SPID identity logs in for the first time and the e-mail address returned by the Identity Provider matches an existing local account, log in as that account instead of creating a new one. Leave this off unless you need it: it gives whoever holds that SPID identity the permissions of the existing account. Accounts with administrative privileges are never linked, whatever this setting says.'),
+      '#type' => 'checkbox',
+      '#title' => $this->t('Link SPID logins to existing accounts by e-mail'),
+    ];
+
     foreach (SpidService::getSpidAttributes() as $key => $attribute) {
       $this->buildUserMappingFormElement($form, $key, $attribute);
     }
@@ -190,7 +197,8 @@ class SpidConfigureForm extends ConfigFormBase {
       ->set('sp_org_name', $form_state->getValue('sp_org_name'))
       ->set('sp_org_display_name', $form_state->getValue('sp_org_display_name'))
       ->set('sp_metadata_attributes', $metadataAttributes)
-      ->set('spid_level', $form_state->getValue('spid_level'));
+      ->set('spid_level', $form_state->getValue('spid_level'))
+      ->set('link_existing_accounts', (bool) $form_state->getValue('link_existing_accounts'));
 
     foreach (SpidService::getSpidAttributes() as $key => $attribute) {
       $this->config('spid.settings')
